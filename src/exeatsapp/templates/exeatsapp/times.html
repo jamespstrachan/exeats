@@ -23,7 +23,7 @@
           *
         </td>
         <td class="field">
-          <input value="31/05/18 09:00" type="text" onkeypress="return event.keyCode != 13;" class="date" name="startingAt" id="fld_startingAt" />
+          <input value="{{ suggested_slot | date:"d/m/y h:i"}}" type="text" onkeypress="return event.keyCode != 13;" class="date" name="startingAt" id="fld_startingAt" />
         </td>
       </tr>
       <tr>
@@ -68,7 +68,7 @@
           *
         </td>
         <td class="field">
-          <input value="31/05/18 09:00" type="text" onkeypress="return event.keyCode != 13;" class="date" name="startingAt" id="fld_startingAt" />
+          <input value="{{ suggested_slot | date:"d/m/y h:i"}}" type="text" onkeypress="return event.keyCode != 13;" class="date" name="startingAt" id="fld_startingAt" />
         </td>
       </tr>
       <tr>
@@ -79,7 +79,7 @@
           *
         </td>
         <td class="field">
-          <input value="31/05/18 09:00" type="text" onkeypress="return event.keyCode != 13;" class="date" name="endingAt" id="fld_endingAt" />
+          <input value="{{ suggested_slot | date:"d/m/y h:i"}}" type="text" onkeypress="return event.keyCode != 13;" class="date" name="endingAt" id="fld_endingAt" />
         </td>
       </tr>
       <tr>

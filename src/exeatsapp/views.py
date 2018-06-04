@@ -76,7 +76,10 @@ def times(request):
 
         return HttpResponseRedirect(reverse('exeatsapp:times'))
 
+    midnight_today = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())
+    suggested_time = midnight_today + datetime.timedelta(hours=33)  # 9am tomorrow morning
     context = {
+        'suggested_slot': suggested_time,
         'slots': Slot.objects.filter(tutor=tutor_id, start__gte=datetime.datetime.now()).order_by('start')
     }
 
