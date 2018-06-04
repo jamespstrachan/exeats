@@ -1,0 +1,12 @@
+Django
+Pillow
+psycopg2-binary
+flake8
+pyyaml
+django-tables2
+django-filter
+django-bootstrap4
+git+https://github.com/thetarkus/anora.git
+django-pipeline
+libsasscompiler
+gunicorn

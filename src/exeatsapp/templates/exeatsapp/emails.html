@@ -1,0 +1,126 @@
+{% extends "exeatsapp/layout.html" %}
+
+{% block content %}
+<h1>
+  Send Emails to Students
+</h1>
+<p>
+  A sign-up email with the following body will be sent to the students below.
+</p>
+<p>
+  Note that the text [link] will be replaced by a special hyperlink for each student to sign up.
+</p>
+<p>
+  Alternatively, you can <a href="mailto:{{ tutor.email }}" onclick="composeLink()">send an email to the selected recipients</a> using your own email client.
+</p>
+<script type="text/javascript">
+  function changeAll(checked){
+    [...document.getElementsByClassName('student_checkbox')].forEach(x => x.checked = checked)
+  }
+
+  function selectNoResponse() {
+    document.getElementById('fld_student_AMVG1XRX').checked = true;
+    document.getElementById('fld_student_WPVLFXJC').checked = true;
+    document.getElementById('fld_student_RZVFZKG4').checked = true;
+  }
+
+  function selectRecent() {
+    document.getElementById('fld_student_AMVG1XRX').checked = false;
+    document.getElementById('fld_student_WPVLFXJC').checked = false;
+    document.getElementById('fld_student_RZVFZKG4').checked = false;
+  }
+
+  function selectProspective() {
+    document.getElementById('fld_student_AMVG1XRX').checked = false;
+    document.getElementById('fld_student_WPVLFXJC').checked = false;
+    document.getElementById('fld_student_RZVFZKG4').checked = false;
+  }
+
+  function selectInverse() {
+    document.getElementById('fld_student_AMVG1XRX').checked = !document.getElementById('fld_student_AMVG1XRX').checked;
+    document.getElementById('fld_student_WPVLFXJC').checked = !document.getElementById('fld_student_WPVLFXJC').checked;
+    document.getElementById('fld_student_RZVFZKG4').checked = !document.getElementById('fld_student_RZVFZKG4').checked;
+  }
+
+  function composeLink() {
+    document.getElementById('emailLink').href = 'mailto:{{ tutor.name }}<{{ tutor.email }}>?bcc=';
+    if (document.getElementById('fld_student_AMVG1XRX').checked) {
+      document.getElementById('emailLink').href = document.getElementById('emailLink').href + 'jon.pretty@sygneca.com,';	}
+    if (document.getElementById('fld_student_WPVLFXJC').checked) {
+      document.getElementById('emailLink').href = document.getElementById('emailLink').href + 'jon@sygneca.com,';	}
+    if (document.getElementById('fld_student_RZVFZKG4').checked) {
+      document.getElementById('emailLink').href = document.getElementById('emailLink').href + 'jon@worldham.net,';	}
+    }
+</script>
+<form action="." enctype="application/x-www-form-urlencodod" method="post" id="form_studentsToEmail">
+  {% csrf_token %}
+  <input value="studentsToEmail" type="hidden" name="submitted" />
+  <div class="form">
+    <table>
+      <tr>
+        <td></td>
+        <td></td>
+        <td class="description">
+
+        </td>
+      </tr>
+      <tr>
+        <td class="label">
+
+        </td>
+        <td class="required">
+
+        </td>
+        <td class="field">
+          <textarea cols="50" rows="12" name="emailBody" id="fld_emailBody">Please follow the link below to sign up for your terminal exeat.
+
+[link]
+
+Regards,
+{{ tutor.name }}
+{{ tutor.email }}
+
+</textarea>
+        </td>
+      </tr>
+      <tr>
+        <td class="label">
+
+        </td>
+        <td class="required">
+
+        </td>
+        <td class="field">
+          <p>
+            Please select which students this email should be sent to from the list below.
+          </p>
+          <p>
+            {#todo: make all of these filters work in js#}
+            <small><a href="javascript:changeAll(true)">All</a> | <a href="javascript:changeAll(false)">None</a> | <a href="javascript:selectNoResponse()">Not signed up</a> | <a href="javascript:selectRecent()">Seen in last fortnight</a> | <a href="javascript:selectProspective()">Scheduled to see</a> | <a href="javascript:selectInverse()">Invert</a> </small>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="label">
+
+        </td>
+        <td class="required">
+
+        </td>
+        <td class="field">
+          {% for student in students %}
+          <input class="student_checkbox" type="checkbox" onkeypress="return event.keyCode != 13;" class="checkbox" checked name="student_{{ student.id }}" id="fld_student_AMVG1XRX" data-last-seen /> {{ student.name }} ({{ student.email }})<br />
+          {% endfor %}
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="action">
+
+    <p class="button">
+      <input value="Send" type="submit" class="button" name="_submitBtn" id="fld__submitBtn" />
+    </p>
+    <div class="clear"></div>
+  </div>
+</form>
+{% endblock %}

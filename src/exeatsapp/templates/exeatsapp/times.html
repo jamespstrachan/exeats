@@ -1,0 +1,157 @@
+{% extends "exeatsapp/layout.html" %}
+
+{% block content %}
+<h1>
+  Exeat times
+</h1>
+<h3>
+  Add a new time
+</h3>
+<p>
+  To make a new time available, please enter the time and location below.
+</p>
+<form action="." enctype="application/x-www-form-urlencodod" method="post" id="form_addSingle">
+  {% csrf_token %}
+  <input value="addSingle" type="hidden" name="submitted" />
+  <div class="form">
+    <table>
+      <tr>
+        <td class="label">
+          Start (dd/mm/yy hh:mm)
+        </td>
+        <td class="required">
+          *
+        </td>
+        <td class="field">
+          <input value="31/05/18 09:00" type="text" onkeypress="return event.keyCode != 13;" class="date" name="startingAt" id="fld_startingAt" />
+        </td>
+      </tr>
+      <tr>
+        <td class="label">
+          Location
+        </td>
+        <td class="required">
+          *
+        </td>
+        <td class="field">
+          <input value="" type="text" onkeypress="return event.keyCode != 13;" class="string" name="location" id="fld_location" />
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="action">
+    <p class="required">
+      <span class="required">*</span>Indicates a required field.
+    </p>
+    <p class="button">
+      <input value="Add" type="submit" class="button" name="_submitBtn" id="fld__submitBtn" />
+    </p>
+    <div class="clear"></div>
+  </div>
+</form>
+<h3>
+  Add a new block of times
+</h3>
+<p>
+  To make several new times available, please enter the location, start time, end time and duration of each terminal exeat.
+</p>
+<form action="." enctype="application/x-www-form-urlencodod" method="post" id="form_addBlock">
+  {% csrf_token %}
+  <input value="addBlock" type="hidden" name="submitted" />
+  <div class="form">
+    <table>
+      <tr>
+        <td class="label">
+          Start (dd/mm/yy hh:mm)
+        </td>
+        <td class="required">
+          *
+        </td>
+        <td class="field">
+          <input value="31/05/18 09:00" type="text" onkeypress="return event.keyCode != 13;" class="date" name="startingAt" id="fld_startingAt" />
+        </td>
+      </tr>
+      <tr>
+        <td class="label">
+          End (dd/mm/yy hh:mm)
+        </td>
+        <td class="required">
+          *
+        </td>
+        <td class="field">
+          <input value="31/05/18 09:00" type="text" onkeypress="return event.keyCode != 13;" class="date" name="endingAt" id="fld_endingAt" />
+        </td>
+      </tr>
+      <tr>
+        <td class="label">
+          Duration
+        </td>
+        <td class="required">
+          *
+        </td>
+        <td class="field">
+          <input value="10" type="text" onkeypress="return event.keyCode != 13;" class="int" name="duration" id="fld_duration" /> minutes
+        </td>
+      </tr>
+      <tr>
+        <td class="label">
+          Location
+        </td>
+        <td class="required">
+          *
+        </td>
+        <td class="field">
+          <input value="" type="text" onkeypress="return event.keyCode != 13;" class="string" name="location" id="fld_location" />
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="action">
+    <p class="required">
+      <span class="required">*</span>Indicates a required field.
+    </p>
+    <p class="button">
+      <input value="Add" type="submit" class="button" name="_submitBtn" id="fld__submitBtn" />
+    </p>
+    <div class="clear"></div>
+  </div>
+</form>
+
+{% if slots %}
+<h3>
+  Current times
+</h3>
+<p>
+  You have made the following times available for students to sign up for terminal exeats.
+</p>
+<form action="." enctype="application/x-www-form-urlencodod" method="post" id="form_currentTimes">
+  {% csrf_token %}
+  <input value="currentTimes" type="hidden" name="submitted" />
+  <div class="form">
+    <table>
+      {% for slot in slots %}
+      <tr>
+        <td class="label">
+
+        </td>
+        <td class="required">
+
+        </td>
+        <td class="field">
+          <input value="true" type="checkbox" onkeypress="return event.keyCode != 13;" class="checkbox" name="slot_{{ slot.id }}" id="fld_slot_MBGH7V46" />
+          {{ slot.start | date:'SHORT_DATETIME_FORMAT' }} in {{ slot.location }} ({% if slot.allocatedto %}{{slot.allocatedto.name}}{% else %}free{% endif %})
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="action">
+
+    <p class="button">
+      <input value="Remove" type="submit" class="button" onclick="return confirm('Are you sure you want to remove these times?')" name="_submitBtn" id="fld__submitBtn" />
+    </p>
+    <div class="clear"></div>
+  </div>
+</form>
+{% endif %}
+{% endblock %}

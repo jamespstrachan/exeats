@@ -1,0 +1,6 @@
+/src/static
+/logs/*
+!README.txt
+/src/db.sqlite3
+__pycache__
+/src/credentials.py

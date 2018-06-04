@@ -1,0 +1,58 @@
+{% extends "exeatsapp/layout.html" %}
+
+{% block content %}
+<h1>
+  Terminal Exeat for James Strachan
+</h1>
+{% if chosen_slot %}
+<h3>
+  Choose a different time
+</h3>
+<p>
+  You currently have the following time:
+</p>
+<p>
+  {{ slot.start | date:'SHORT_DATETIME_FORMAT' }} in {{ slot.location }}
+</p>
+<p>
+  If you wish to change your choice select from the list below:
+</p>
+{% else %}
+<h3>
+  Choose a time
+</h3>
+<p>
+  Please choose a time from the list below:
+</p>
+{% endif %}
+
+<form action="" enctype="application/x-www-form-urlencodod" method="post" id="form_chooseSlot">
+  {% csrf_token %}
+  <input value="chooseSlot" type="hidden" name="submitted" />
+  <div class="form">
+    <table>
+    {% for slot in slots %}
+      <tr>
+        <td class="label">
+          {{ slot.start | date:'SHORT_DATETIME_FORMAT' }} in {{ slot.location }}
+        </td>
+        <td class="required">
+
+        </td>
+        <td class="field">
+          {% if slot.allocatedto %}
+            {{ slot.allocatedto.name }}
+          {% else %}
+            <input value="Choose" type="submit" class="button" name="slot_{{slot.id}}" id="fld_btn_9MLGCC11" />
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </table>
+  </div>
+  <div class="action">
+
+    <div class="clear"></div>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,514 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>Welcome</title>
+    <style type="text/css">
+
+html, body {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+body {
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 76%;
+	color: #444;
+	background: #eee;
+}
+
+a {
+	text-decoration: none;
+	font-weight: bold;
+	color: #444;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+h1 {
+	font-size: 1.7em;
+	font-weight: normal;
+	margin: 1.2em 0;
+}
+
+h2 {
+	font-size: 1.5em;
+	font-weight: normal;
+	margin: 1.2em 0;
+}
+
+h3 {
+	font-size: 1.3em;
+	font-weight: normal;
+	margin: 1.2em 0;
+}
+
+h4 {
+	font-size: 1.1em;
+	font-weight: bold;
+	margin: 1.2em 0;
+}
+
+h5 {
+	font-size: 1.0em;
+	font-weight: bold;
+	margin: 1.2em 0;
+}
+
+h6 {
+	font-size: 1.0em;
+	font-weight: bold;
+	margin: 1.2em 0;
+}
+
+ol, ul, li {
+	font-size: 1.0em;
+	line-height: 1.4em;
+	margin-top: 0.2em;
+	margin-bottom: 0.1em;
+}
+
+p {
+	font-size: 1.0em;
+	line-height: 1.4em;
+	margin: 1.2em 0;
+}
+
+li > p {
+	margin-top: 0.2em;
+}
+
+pre {
+	font-family: monospace;
+	font-size: 1.0em;
+}
+
+strong, b {
+	font-weight: bold;
+}
+
+td {
+	font-size: 1.0em;
+}
+
+.clear {
+	clear: both;
+	height: 1px;
+	overflow: hidden;
+	line-height: 1%;
+	font-size: 0px;
+	margin-bottom: -1px;
+}
+
+* html .clear {
+	height: auto;
+	margin-bottom: 0;
+}
+
+.noncss {
+	display: none;
+}
+
+img {
+	border: none;
+}
+
+form {
+	margin: 0;
+}
+
+/*\*/
+html, body, #layout-container, #layout-middle, #layout-clear-wrapper, #layout-center-wrapper {
+	height: 100%;
+}
+
+/**/
+body {
+	min-width: 768px;
+	text-align: center;
+}
+
+#layout-container {
+	top: -101px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: left;
+	position: relative;
+	width: 768px;
+}
+
+#layout-middle {
+	min-height: 100%;
+	background: white;
+}
+
+#layout-midd\6C	e {
+	height: auto;
+}
+
+/*\*/
+* html #layout-middle {
+	height: 100%;
+}
+
+/**/
+#layout-clear-wrapper {
+	z-index: 1;
+	position: relative;
+	margin-left: 180px;
+	width: 586px;
+	background: white;
+}
+
+* html #layout-clear-wrapper {
+	width: 587px;
+	\width: 586px;
+}
+
+#layout-float-wrapper {
+	width: 586px;
+	margin-left: 0px;
+	margin-right: -1px;
+	float: left;
+	display: inline;
+}
+
+#layout-center {
+	width: 586px;
+	float: right;
+	display: inline;
+}
+
+/*\*/
+#layout-center {
+	margin-left: -1px;
+}
+
+/**/
+.layout-clear-header {
+	height: 147px;
+	margin-bottom: 0px;
+	overflow: hidden;
+}
+
+.layout-clear-footer {
+	height: 26px;
+	width: 0px;
+	overflow: hidden;
+}
+
+#layout-footer-container {
+	z-index: 1;
+	position: absolute;
+	clear: both;
+	width: 768px;
+	height: 125px;
+	overflow: hidden;
+	margin-top: -25px;
+}
+
+#layout-footer {
+	background: white;
+	margin: 0 1px 0 1px;
+	height: 24px;
+}
+
+#layout-margin {
+	background: #eee;
+	height: 101px;
+	width: 768px;
+	overflow: hidden;
+}
+
+#layout-header-container {
+	z-index: 1;
+	position: absolute;
+	top: 0;
+	width: 768px;
+	height: 146px;
+	overflow: hidden;
+}
+
+#layout-header {
+	background: white;
+	margin: 0 1px 0 1px;
+	height: 45px;
+}
+
+#layout-background {
+	top: 0;
+	position: absolute;
+	height: 100%;
+	overflow: hidden;
+	width: 586px;
+	margin-left: 180px;
+	background: white;
+}
+
+* html #layout-background {
+	display: none;
+}
+
+#layout-left {
+	width: 182px;
+	float: left;
+	display: inline;
+	position: relative;
+	margin-left: -181px;
+}
+
+*>html #layout-left {
+	width: 181px;
+}
+
+/*\*/
+* html #layout-left {
+	margin-right: -3px;
+}
+
+/**/
+#layout-container-left {
+	width: 180px;
+}
+
+#layout-middle {
+	border-right: 1px solid #ddd;
+	border-left: 1px solid #ddd;
+}
+
+#layout-top-outer-border {
+	background: #ddd;
+	height: 1px;
+	overflow: hidden;
+	font-size: 0px;
+}
+
+#layout-bottom-outer-border {
+	background: #ddd;
+	height: 1px;
+	overflow: hidden;
+	font-size: 0px;
+}
+
+body, p, td, input, textarea, h1, h2, h3, h4 {
+	font-family: Verdana;
+	font-size: 8pt;
+}
+
+td {
+	padding: 2px 20px 2px 0;
+}
+
+td.required, span.required {
+	padding-right: 2px;
+	color: orange;
+}
+
+table {
+	border-top: solid 1px #ccc;
+	border-bottom: solid 1px #ccc;
+	padding-left: 20px;
+}
+
+h1, h2 {
+	font-size: 11pt;
+	font-weight: bold;
+}
+
+h3 {
+	font-size: 8pt;
+	font-weight: bold;
+}
+
+a, a:link, a:visited, a:hover, a:active {
+	color: #93c124;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+a:hover, a:active {
+	text-decoration: underline;
+}
+
+.footer {
+	color: #999;
+	font-size: 10px;
+	padding: 4px 0 4px 20px;
+	border-top: solid 1px #ddd;
+}
+
+input, textarea {
+	border: solid 1px #aaa;
+	padding: 2px 5px;
+}
+
+input:focus, textarea:focus {
+	border: solid 1px #666;
+}
+
+input.button {
+	background-color: white;
+	color: white;
+	font-weight: bold;
+	background: #93c124;
+	border: none;
+	padding: 2px 8px;
+}
+
+input.button:focus {
+	border: none;
+}
+
+input.checkbox {
+	border: none;
+}
+
+li {
+	border-bottom: solid 1px #ccc;
+	width: 140px;
+	padding: 0;
+	list-style-type: none;
+}
+
+ul {
+	margin: 16px 0 0 0;
+	padding: 0;
+	width: 140px;
+}
+
+li a:link, li a:visited {
+	font-weight: bold;
+	color: #aaa;
+	display: block;
+	height: 16px;
+	line-height: 16px;
+	width: 118px;
+	margin-left: 22px;
+	text-decoration: none;
+}
+
+li a:hover, li a:active {
+	font-weight: bold;
+	color: #444;
+	display: block;
+	height: 16px;
+	line-height: 16px;
+	width: 118px;
+	margin-left: 22px;
+	text-decoration: none;
+}
+
+li a:active {
+	color: #93c124;
+}
+
+#login {
+	position: absolute;
+	margin-left: 180px;
+	margin-top: -21px;
+}
+
+.indent {
+	padding-left: 20px;
+}
+
+.errormessage {
+	color: orange;
+	font-weight: bold;
+	font-size: 7pt;
+	padding-top: 5px;
+}
+    </style>
+    <!--[if IE]><style type="text/css"> * { word-wrap: break-word; } </style> <![endif]-->
+  </head>
+  <body class="">
+    <div id="layout-container">
+      <div id="layout-middle">
+        <div id="layout-clear-wrapper">
+          <div id="layout-float-wrapper">
+            <div id="layout-center">
+              <div class="layout-clear-header"></div>
+              {% block content %}{% endblock %}
+              <div class="layout-clear-footer"></div>
+            </div>
+            <div id="layout-left">
+              <div class="layout-clear-header"></div>
+              <div id="layout-container-left">
+                <ul>
+                {% if not request.session.tutor_id %}
+                  <li>
+                    <a href="{% url 'exeatsapp:login'%}">Tutor login</a>
+                  </li>
+                {% else %}
+                 <ul>
+                  <li>
+                    <a href="{% url 'exeatsapp:times'%}">Exeat times</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'exeatsapp:students'%}">Student admin</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'exeatsapp:emails'%}">Send emails</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'exeatsapp:view'%}">Allocated times</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'exeatsapp:history'%}">Exeat history</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'exeatsapp:logout'%}">Log out</a>
+                  </li>
+                </ul>
+                {% endif %}
+                </ul>
+              </div>
+              <div class="layout-clear-footer"></div>
+            </div>
+          </div>
+          <div class="clear">
+            &nbsp;
+          </div>
+        </div>
+        <div id="layout-background">
+          &nbsp;
+        </div>
+      </div>
+      <div id="layout-header-container">
+        <div id="layout-margin">
+          &nbsp;
+        </div>
+        <div id="layout-top-outer-border">
+          &nbsp;
+        </div>
+        <div id="layout-header">
+          <img src="http://www.exeats.com/static/TM9QR5WA/images/logo.png" alt="exeats.com" />
+          <div id="login">
+            {% if request.session.tutor_email %}
+            <em>You are logged in as {{ request.session.tutor_email }}</em>
+            {% else %}
+            <em>&nbsp;</em>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="clear">
+        &nbsp;
+      </div>
+      <div id="layout-footer-container">
+        <div id="layout-footer">
+          <div class="footer">
+            &copy; made in 2007 by JLP, refreshed 2018 by JS.
+            Please send comments and feedback to <a href="exeatsystem@gmail.com">exeatsystem@gmail.com</a>
+          </div>
+        </div>
+        <div id="layout-bottom-outer-border">
+          &nbsp;
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,33 @@
+{% extends "exeatsapp/layout.html" %}
+
+{% block content %}
+<h1>
+  Allocated times
+</h1>
+<p>
+{% if slots %}
+  You have not yet specified any times for terminal exeats.
+{% else %}
+  Below is the list of terminal exeat times and the students who have signed up.
+{% endif %}
+</p>
+<table>
+{% for slot in slots %}
+  <tr>
+    <td>
+      {{ slot.start | date:'SHORT_DATETIME_FORMAT' }}
+    </td>
+    <td>
+      {{ slot.location }}
+    </td>
+    <td>
+      {% if slot.allocatedto %}
+      <a href="{{ slot.allocatedto.email }}">{{ slot.allocatedto.name }}</a>
+      {% else %}
+      <em>available</em>
+      {% endif %}
+    </td>
+  </tr>
+{% endfor %}
+</table>
+{% endblock %}

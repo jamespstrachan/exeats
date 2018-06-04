@@ -1,0 +1,59 @@
+{% extends "exeatsapp/layout.html" %}
+
+{% block content %}
+<p>
+
+</p>
+<div id="loginForm">
+  <form action="" enctype="application/x-www-form-urlencodod" method="post" id="form_login">
+    <input value="login" type="hidden" name="submitted" />
+    <h2 class="form">
+      <span>Login</span>
+    </h2>
+    <div class="form">
+      <table>
+        {% if login_failed %}
+        <tr>
+          <td></td>
+          <td></td>
+          <td class="errormessage">
+            Incorrect email or password.
+          </td>
+        </tr>
+        {% endif %}
+        <tr>
+          <td class="label">
+            Email
+          </td>
+          <td class="required">
+            *
+          </td>
+          <td class="field">
+            <input value="" type="text" onkeypress="return event.keyCode != 13;" class="string" name="__email" id="fld___email" />
+          </td>
+        </tr>
+        <tr>
+          <td class="label">
+            Password
+          </td>
+          <td class="required">
+            *
+          </td>
+          <td class="field">
+            <input value="" type="password" class="password" name="__password" id="fld___password" />
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="action">
+      <p class="required">
+        <span class="required">*</span>Indicates a required field.
+      </p>
+      <p class="button">
+        <input value="Login" type="submit" class="button" name="_submitBtn" id="fld__submitBtn" />
+      </p>
+      <div class="clear"></div>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "exeatsapp/layout.html" %}
+
+{% block content %}
+<h1>
+  Exeat History
+</h1>
+<p>
+Below is a historical list of terminal exeat times.
+</p>
+<table>
+{% for slot in slots %}
+  <tr>
+    <td>
+      {{ slot.start | date:"SHORT_DATETIME_FORMAT" }}
+    </td>
+    <td>
+      {{ slot.location }}
+    </td>
+    <td>
+      {% if slot.allocatedto %}
+      <a href="{{ slot.allocatedto.email }}">{{ slot.allocatedto.name }}</a>
+      {% else %}
+      <em>available</em>
+      {% endif %}
+    </td>
+  </tr>
+{% endfor %}
+</table>
+{% endblock %}

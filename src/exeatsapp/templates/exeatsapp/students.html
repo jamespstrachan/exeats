@@ -1,0 +1,85 @@
+{% extends "exeatsapp/layout.html" %}
+
+{% block content %}
+<h1>
+  Student Admin
+</h1>
+<h3>
+  Upload student details
+</h3>
+<p>
+  Please enter students&rsquo; details into the field below. Each line should be in the format
+</p>
+<p class="indent">
+  [Full name], [Email/CRS ID]
+</p>
+<p>
+  or,
+</p>
+<p class="indent">
+  [Last name], [First name], [Email/CRS ID]
+</p>
+<p>
+  For example,
+</p>
+<p class="indent">
+  John Smith,john.smith@example.com<br />Jones, Simon, spj87<br />David Evans,dpe37
+</p>
+<form action="" enctype="application/x-www-form-urlencodod" method="post" id="form_studentsCsv">
+  {% csrf_token %}
+  <input value="studentsCsv" type="hidden" name="submitted" />
+  <div class="form">
+    <table>
+      <tr>
+        <td class="label">
+
+        </td>
+        <td class="required">
+
+        </td>
+        <td class="field">
+          <textarea cols="50" rows="20" name="csvText" id="fld_csvText"></textarea>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="action">
+
+    <p class="button">
+      <input value="Add" type="submit" class="button" name="_submitBtn" id="fld__submitBtn" />
+    </p>
+    <div class="clear"></div>
+  </div>
+</form>
+<h3>
+  Current Students
+</h3>
+<form action="" enctype="application/x-www-form-urlencodod" method="post" id="form_students">
+  {% csrf_token %}
+  <input value="students" type="hidden" name="submitted" />
+  <div class="form">
+    <table>
+      <tr>
+        <td class="label">
+
+        </td>
+        <td class="required">
+
+        </td>
+        <td class="field">
+          {% for student in students %}
+          <input value="true" type="checkbox" onkeypress="return event.keyCode != 13;" class="checkbox" name="student_{{ student.id }}" id="fld_student_AMVG1XRX" /> {{ student.name }} ({{ student.email }})<br />
+          {% endfor %}
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="action">
+
+    <p class="button">
+      <input value="Remove" type="submit" class="button" onclick="return confirm('Are you sure you want to remove these students?')" name="_submitBtn" id="fld__submitBtn" />
+    </p>
+    <div class="clear"></div>
+  </div>
+</form>
+{% endblock %}
