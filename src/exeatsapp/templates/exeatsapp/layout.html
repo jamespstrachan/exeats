@@ -421,6 +421,24 @@ li a:active {
 	font-size: 7pt;
 	padding-top: 5px;
 }
+
+.beta-badge{
+  position:absolute;
+  top:5px;
+  right:10px;
+  display:block;
+  width: 30px;
+  height: 30px;
+  box-sizing:border-box;
+  padding: 7px 2px;
+  z-index:101;
+  border-radius:50%;
+  background-color:red;
+  color:white;
+  font-weight: bold;
+  box-shadow: 4px 2px 5px rgba(0,0,0,0.2);
+  transform: rotate(15deg);
+}
     </style>
     <!--[if IE]><style type="text/css"> * { word-wrap: break-word; } </style> <![endif]-->
   </head>
@@ -484,15 +502,14 @@ li a:active {
         <div id="layout-top-outer-border">
           &nbsp;
         </div>
-        <div id="layout-header">
+        <div id="layout-header" style="position: relative; overflow:visible">
           <img src="http://www.exeats.com/static/TM9QR5WA/images/logo.png" alt="exeats.com" />
-          <div id="login">
             {% if request.session.tutor_email %}
-            <em>You are logged in as {{ request.session.tutor_email }}</em>
-            {% else %}
-            <em>&nbsp;</em>
+            <div class="beta-badge">beta</div>
+            <div id="login">
+              <em>You are logged in as {{ request.session.tutor_email }}</em>
+            </div>
             {% endif %}
-          </div>
         </div>
       </div>
       <div class="clear">
