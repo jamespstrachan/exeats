@@ -81,7 +81,7 @@ def times(request):
     suggested_time = midnight_today + datetime.timedelta(hours=33)  # 9am tomorrow morning
     context = {
         'suggested_slot': suggested_time,
-        'slots': Slot.objects.filter(tutor=tutor_id, start__gte=datetime.datetime.now()).order_by('start')
+        'slots': Slot.objects.filter(tutor=tutor_id, start__gte=get_midnight()).order_by('start')
     }
 
     return render(request, 'exeatsapp/times.html', context)
@@ -223,9 +223,9 @@ def signup(request, hash):
 
 @login_required
 def view(request):
-    midnight = datetime.datetime.combine(datetime.datetime.today(), datetime.time.min)
+
     context = {
-        'slots': Slot.objects.filter(tutor=request.session['tutor_id'], start__gte=midnight).order_by('start')
+        'slots': Slot.objects.filter(tutor=request.session['tutor_id'], start__gte=get_midnight()).order_by('start')
     }
     return render(request, 'exeatsapp/view.html', context)
 
@@ -236,3 +236,6 @@ def history(request):
         'slots': Slot.objects.filter(tutor=request.session['tutor_id'], start__lte=datetime.datetime.now()).order_by('-start')
     }
     return render(request, 'exeatsapp/history.html', context)
+
+def get_midnight():
+    return datetime.datetime.combine(datetime.datetime.today(), datetime.time.min)
