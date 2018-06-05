@@ -169,14 +169,14 @@ def emails(request):
     tutor_id = request.session.get('tutor_id')
     tutor = Tutor.objects.get(id=tutor_id)
     if request.method == 'POST':
-        body = request.POST.get('emailBody', False)
+        body_template = request.POST.get('emailBody', False)
         student_ids = [k[8:] for k,v in request.POST.items() if k[0:8] == 'student_']
         students = Student.objects.filter(id__in=student_ids, tutor=tutor_id)
 
         subject = 'Terminal exeat signup'
         for student in students:
             to_email = email_policy_check(student.email)
-            body = body.replace('[link]', get_url_for_student(student))
+            body = body_template.replace('[link]', get_url_for_student(student))
             email = EmailMessage(subject, body, f'{settings.SYSTEM_FROM_NAME}<{settings.SYSTEM_FROM_EMAIL}>',
                                  [to_email], headers = {'Reply-To': tutor.email})
             email.send()
@@ -219,6 +219,7 @@ def signup(request, hash):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     context = {
+        'student': student,
         'chosen_slot': Slot.objects.filter(allocatedto=student.id, start__gte=datetime.datetime.now()).first(),
         'slots': Slot.objects.filter(tutor=student.tutor.id, start__gte=datetime.datetime.now()).order_by('start')
     }
