@@ -175,7 +175,7 @@ def emails(request):
 
         subject = 'Terminal exeat signup'
         for student in students:
-            to_email = 'jamespstrachan@gmail.com' # student.email
+            to_email = email_policy_check(student.email)
             body = body.replace('[link]', get_url_for_student(student))
             email = EmailMessage(subject, body, f'{settings.SYSTEM_FROM_NAME}<{settings.SYSTEM_FROM_EMAIL}>',
                                  [to_email], headers = {'Reply-To': tutor.email})
@@ -210,7 +210,7 @@ def signup(request, hash):
             slot.save()
             subject  = 'Terminal exeat confirmation'
             body     = render_to_string('exeatsapp/emailconfirmation.html', {'slot': slot, 'url': get_url_for_student(student)})
-            to_email = 'jamespstrachan@gmail.com' # student.email
+            to_email = email_policy_check(student.email)
             email = EmailMessage(subject, body, f'{settings.SYSTEM_FROM_NAME}<{settings.SYSTEM_FROM_EMAIL}>',
                                  [to_email])
             email.send()
@@ -239,6 +239,12 @@ def history(request):
         'slots': Slot.objects.filter(tutor=request.session['tutor_id'], start__lte=datetime.datetime.now()).order_by('-start')
     }
     return render(request, 'exeatsapp/history.html', context)
+
+
+def email_policy_check(email):
+    """ overwrites email addresses with a saftey address if set """
+    return getattr(settings, 'ALL_EMAILS_TO', email)
+
 
 def get_midnight():
     return datetime.datetime.combine(datetime.datetime.today(), datetime.time.min)

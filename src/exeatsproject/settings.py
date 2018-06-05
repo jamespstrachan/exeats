@@ -147,3 +147,5 @@ EMAIL_USE_TLS       = True
 
 SYSTEM_FROM_EMAIL = 'exeatsystem@gmail.com'
 SYSTEM_FROM_NAME  = 'Exeat System'
+## If set all system emails will be sent here
+#ALL_EMAILS_TO     = 'jamespstrachan+exeats@gmail.com'
