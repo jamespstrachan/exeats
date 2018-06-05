@@ -154,7 +154,7 @@ def get_student_for_hash(hash):
 
 
 def get_hash_for_student(student):
-    salt = 'zpeeov5!5!2onxl'
+    salt = 'zov5!5!2onxl'
     cleartext = salt + student.email
     return str(student.id) + '-' + hashlib.md5(cleartext.encode('utf-8')).hexdigest()[0:12]
 
