@@ -12,6 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.utils import timezone
+from django.db.models import Max
 
 from .models import Tutor, Slot, Student
 
@@ -182,7 +183,9 @@ def emails(request):
         return render(request, 'exeatsapp/emailsdelivered.html')
 
     context = {
-        'students': Student.objects.filter(tutor=request.session['tutor_id']).order_by('name'),
+        'students': Student.objects.filter(tutor=request.session['tutor_id'])
+                                   .annotate(last_slot=Max('slot__start'))
+                                   .order_by('name'),
         'tutor': tutor,
     }
     return render(request, 'exeatsapp/emails.html', context)
@@ -216,7 +219,7 @@ def signup(request, hash):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     context = {
-        'chosen_slot': Slot.objects.get(allocatedto=student.id, start__gte=datetime.datetime.now()),
+        'chosen_slot': Slot.objects.filter(allocatedto=student.id, start__gte=datetime.datetime.now()).first(),
         'slots': Slot.objects.filter(tutor=student.tutor.id, start__gte=datetime.datetime.now()).order_by('start')
     }
     return render(request, 'exeatsapp/signup.html', context)
