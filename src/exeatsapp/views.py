@@ -189,6 +189,7 @@ def signup(request, hash):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     context = {
+        'chosen_slot': Slot.objects.get(allocatedto=student.id, start__gte=datetime.datetime.now()),
         'slots': Slot.objects.filter(tutor=student.tutor.id, start__gte=datetime.datetime.now()).order_by('start')
     }
     return render(request, 'exeatsapp/signup.html', context)
