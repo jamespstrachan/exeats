@@ -1,6 +1,7 @@
 import datetime
 import csv
 import hashlib
+import re
 
 from django.shortcuts import render
 from django.template.loader import render_to_string
@@ -88,35 +89,61 @@ def times(request):
 
 @login_required
 def students(request):
-    tutor_id = request.session.get('tutor_id')
     if request.method == 'POST':
-        csv_string = request.POST.get('csvText', False)
-        if csv_string:
-            tutor = Tutor.objects.get(id=tutor_id)
-            for line in csv_string.split('\n'):
-                details = list(map(str.strip, line.split(',')))
-                if len(details) == 3:
-                    name = f'{details[1]} {details[0]}'
-                    email = details[2]
-                else:
-                    name = details[0]
-                    email = details[1]
-                email = email if '@' in email else f'{email}@cam.ac.uk'
-                student = Student.objects.create(name=name, email=email, tutor=tutor)
-                student.save()
+        return update_students(request)
 
-        if request.POST.get('submitted', False) == 'students':
-            student_ids = [k[8:] for k,v in request.POST.items() if k[0:8] == 'student_']
-            students = Student.objects.filter(id__in=student_ids, tutor=tutor_id)
-            students.delete()
-
-        return HttpResponseRedirect(reverse('exeatsapp:students'))
-
+    tutor_id = request.session.get('tutor_id')
     context = {
-        'students': Student.objects.filter(tutor=tutor_id).order_by('name')
+        'students': Student.objects.filter(tutor=tutor_id).order_by('name'),
     }
     return render(request, 'exeatsapp/students.html', context)
 
+def update_students(request):
+    tutor_id = request.session.get('tutor_id')
+
+    # handle addition of new students
+    csv_string = request.POST.get('csvText', False)
+    if csv_string:
+        tutor = Tutor.objects.get(id=tutor_id)
+        for (name, email) in parse_student_details(csv_string):
+            email = email if '@' in email else f'{email}@cam.ac.uk'
+            if not Student.objects.filter(email=email):
+                student = Student.objects.create(name=name, email=email, tutor=tutor)
+                student.save()
+
+    # handle removal of existing students
+    if request.POST.get('submitted', False) == 'students':
+        student_ids = [k[8:] for k,v in request.POST.items() if k[0:8] == 'student_']
+        students = Student.objects.filter(id__in=student_ids, tutor=tutor_id)
+        students.delete()
+
+    return HttpResponseRedirect(reverse('exeatsapp:students'))
+
+
+def parse_student_details(raw_string):
+    """ returns an array of (name, email) tuples from an input with format one of:
+        1) 'Alice Smith<alice@smith.com>, Bob Smith<bob@smith.com>'
+               (all one line, as produced by the student email list builder)
+        2) 'Alice Smith, alice@smith.com
+            Bob Smith, bob@smith.com'
+        3) 'Smith, Alice, alice@smith.com
+            Smith, Bob, bob@smith.com'
+    """
+    details = re.findall(r'\s*(?P<name>[^,\<\>]+?)\s*\<(?P<email>.+?@.+?)\>\s*', raw_string)
+    if details:
+        return details
+
+    details = []
+    for line in raw_string.split('\n'):
+        parts = list(map(str.strip, line.split(',')))
+        if len(parts) == 3:
+            name = f'{parts[1]} {parts[0]}'
+            email = parts[2]
+        else:
+            name = parts[0]
+            email = parts[1]
+        details.append((name, email))
+    return details
 
 
 def get_student_for_hash(hash):
