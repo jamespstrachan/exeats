@@ -25,6 +25,21 @@
 <p class="indent">
   John Smith,john.smith@example.com<br />Jones, Simon, spj87<br />David Evans,dpe37
 </p>
+
+<script type="text/javascript">
+  function map_checkboxes(f){
+    return [...document.getElementsByClassName('checkbox')].map(f)
+  }
+
+  function changeAll(checked){
+    map_checkboxes(x => x.checked = checked)
+  }
+
+  function selectInverse(){
+    map_checkboxes(x => x.checked = !x.checked)
+  }
+</script>
+
 <form action="" enctype="application/x-www-form-urlencodod" method="post" id="form_studentsCsv">
   {% csrf_token %}
   <input value="studentsCsv" type="hidden" name="submitted" />
@@ -59,6 +74,23 @@
   <input value="students" type="hidden" name="submitted" />
   <div class="form">
     <table>
+      <tr>
+        <td class="label">
+
+        </td>
+        <td class="required">
+
+        </td>
+        <td class="field">
+          <p>
+            {#todo: make all of these filters work in js#}
+            <small>
+                <a href="javascript:changeAll(true)">All</a>
+              | <a href="javascript:changeAll(false)">None</a>
+              | <a href="javascript:selectInverse()">Invert</a> </small>
+          </p>
+        </td>
+      </tr>
       <tr>
         <td class="label">
 
