@@ -249,13 +249,12 @@ def history(request):
 def deploy(request):
     """ triggers git pull of updated application code on receipt of valid webhook """
     github_signature = request.META['HTTP_X_HUB_SIGNATURE']
-    signature = hmac.new(settings.SECRET_DEPLOY_KEY.encode('utf-8'), request.body.encode('utf-8'), hashlib.sha1)
+    signature = hmac.new(settings.SECRET_DEPLOY_KEY.encode('utf-8'), request.body, hashlib.sha1)
     expected_signature = 'sha1=' + signature.hexdigest()
     if not hmac.compare_digest(github_signature, expected_signature):
         return HttpResponseForbidden('Invalid signature header')
 
-    if True:
-    #if subprocess.run(["git", "pull"], timeout=15).returncode == 0:
+    if subprocess.run(["git", "pull"], timeout=15).returncode == 0:
         return HttpResponse('Webhook received', status=http.client.ACCEPTED)
     raise Http404("Update failed")
 
