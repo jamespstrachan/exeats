@@ -1,12 +1,15 @@
 import datetime
 import csv
 import hashlib
+import hmac
+import subprocess
 import re
+import http
 
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
@@ -245,14 +248,16 @@ def history(request):
 @csrf_exempt
 def deploy(request):
     """ triggers git pull of updated application code on receipt of valid webhook """
+    github_signature = request.META['HTTP_X_HUB_SIGNATURE']
+    signature = hmac.new(settings.SECRET_DEPLOY_KEY.encode('utf-8'), request.body.encode('utf-8'), hashlib.sha1)
+    expected_signature = 'sha1=' + signature.hexdigest()
+    if not hmac.compare_digest(github_signature, expected_signature):
+        return HttpResponseForbidden('Invalid signature header')
+
     if True:
-    #if request.GET['secret'] is not False and request.GET['secret'] == settings.SECRET_DEPLOY_KEY:
-        import subprocess
-        if subprocess.run(["git", "pull"], timeout=15).returncode == 0:
-            return HttpResponse("OK")
-        raise Http404("Update failed")
-    else:
-        raise Http404("Secret does not match")
+    #if subprocess.run(["git", "pull"], timeout=15).returncode == 0:
+        return HttpResponse('Webhook received', status=http.client.ACCEPTED)
+    raise Http404("Update failed")
 
 
 def email_policy_check(email):
