@@ -25,6 +25,7 @@
 
   function recent(x){ return x.getAttribute('data-timestamp-last-slot') > earliest_recent_timestamp}
   function prospective(x){ return x.getAttribute('data-timestamp-last-slot') > current_timestamp}
+  function attended(x){ return x.getAttribute('data-timestamp-last-slot') == x.getAttribute('data-timestamp-last-attended')}
 
   function changeAll(checked){
     map_checkboxes(x => x.checked = checked)
@@ -34,8 +35,12 @@
     map_checkboxes(x => x.checked = !recent(x))
   }
 
-  function selectRecent(){
-    map_checkboxes(x => x.checked = recent(x) && !prospective(x))
+  function selectMissed(){
+    map_checkboxes(x => x.checked = recent(x) && !prospective(x) && !attended(x))
+  }
+
+  function selectSeen(){
+    map_checkboxes(x => x.checked = recent(x) && !prospective(x) && attended(x))
   }
 
   function selectProspective(){
@@ -99,7 +104,8 @@ Regards,
                 <a href="javascript:changeAll(true)">All</a>
               | <a href="javascript:changeAll(false)">None</a>
               | <a href="javascript:selectNoResponse()">Not signed up</a>
-              | <a href="javascript:selectRecent()">Seen in last fortnight</a>
+              | <a href="javascript:selectMissed()">Missed appointment</a>
+              | <a href="javascript:selectSeen()">Seen in last fortnight</a>
               | <a href="javascript:selectProspective()">Scheduled to see</a>
               | <a href="javascript:selectInverse()">Invert</a> </small>
           </p>
@@ -114,7 +120,11 @@ Regards,
         </td>
         <td class="field">
           {% for student in students %}
-          <input class="student_checkbox" type="checkbox" onkeypress="return event.keyCode != 13;" class="checkbox" checked name="student_{{ student.id }}" id="fld_student_AMVG1XRX" data-email="{{ student.email }}" data-timestamp-last-slot="{{student.last_slot | date:"U"}}" /> {{ student.name }} ({{ student.email }})<br />
+          <input class="student_checkbox" type="checkbox" onkeypress="return event.keyCode != 13;" class="checkbox" checked name="student_{{ student.id }}"
+            data-email="{{ student.email }}"
+            data-timestamp-last-slot="{{student.last_slot | date:'U'}}"
+            data-timestamp-last-attended="{{student.last_attended | date:'U'}}" />
+          {{ student.name }} ({{ student.email }})<br />
           {% endfor %}
         </td>
       </tr>

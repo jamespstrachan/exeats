@@ -12,6 +12,7 @@ class Slot(models.Model):
     location = models.CharField(max_length=100)
     tutor = models.ForeignKey('Tutor', on_delete=models.PROTECT, db_column='tutor')
     allocatedto = models.ForeignKey('Student', on_delete=models.SET_NULL, db_column='allocatedto', blank=True, null=True)
+    attended = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'slot'

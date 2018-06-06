@@ -22,10 +22,13 @@
     </td>
     <td>
       {% if slot.allocatedto %}
-      <a href="{{ slot.allocatedto.email }}">{{ slot.allocatedto.name }}</a>
+      <a href="mailto:{{ slot.allocatedto.email }}">{{ slot.allocatedto.name }}</a>
       {% else %}
       <em>available</em>
       {% endif %}
+    </td>
+    <td>
+        {% include 'exeatsapp/_attended_toggle.html' %}
     </td>
   </tr>
 {% endfor %}

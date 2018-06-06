@@ -15,7 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.utils import timezone
-from django.db.models import Max
+from django.db.models import Max, Q
 
 from .models import Tutor, Slot, Student
 
@@ -188,6 +188,7 @@ def emails(request):
     context = {
         'students': Student.objects.filter(tutor=request.session['tutor_id'])
                                    .annotate(last_slot=Max('slot__start'))
+                                   .annotate(last_attended=Max('slot__start', filter=Q(slot__attended=True)))
                                    .order_by('name'),
         'tutor': tutor,
     }
@@ -197,7 +198,7 @@ def emails(request):
 def signup(request, hash):
     student = get_student_for_hash(hash)
     if not student:
-        raise Exception('link appears to be invalid')
+        raise Http404('link appears to be invalid')
 
     if request.method == 'POST':
         slot_id = [k[5:] for k,v in request.POST.items() if k[0:5] == 'slot_'][0]
@@ -218,7 +219,7 @@ def signup(request, hash):
                                  [to_email])
             email.send()
         else:
-            raise Exception('slot not found')
+            raise Http404('slot not found')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     context = {
@@ -230,12 +231,21 @@ def signup(request, hash):
 
 @login_required
 def view(request):
-
     context = {
         'slots': Slot.objects.filter(tutor=request.session['tutor_id'], start__gte=get_midnight()).order_by('start')
     }
     return render(request, 'exeatsapp/view.html', context)
 
+@login_required
+def toggle_attended(request, id):
+    try:
+        slot = Slot.objects.get(id=id, tutor=request.session['tutor_id'])
+    except Slot.DoesNotExist:
+        raise Http404("Not found")
+
+    slot.attended = not slot.attended
+    slot.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 @login_required
 def history(request):
