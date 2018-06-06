@@ -242,6 +242,7 @@ def history(request):
     return render(request, 'exeatsapp/history.html', context)
 
 
+@csrf_exempt
 def deploy(request):
     """ triggers git pull of updated application code on receipt of valid webhook """
     if True:
