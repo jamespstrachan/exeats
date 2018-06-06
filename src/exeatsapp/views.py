@@ -6,7 +6,7 @@ import re
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
@@ -240,6 +240,18 @@ def history(request):
         'slots': Slot.objects.filter(tutor=request.session['tutor_id'], start__lte=datetime.datetime.now()).order_by('-start')
     }
     return render(request, 'exeatsapp/history.html', context)
+
+
+def deploy(request):
+    """ triggers git pull of updated application code on receipt of valid webhook """
+    if True:
+    #if request.GET['secret'] is not False and request.GET['secret'] == settings.SECRET_DEPLOY_KEY:
+        import subprocess
+        if subprocess.run(["git", "pull"], timeout=15).returncode == 0:
+            return HttpResponse("OK")
+        raise Http404("Update failed")
+    else:
+        raise Http404("Secret does not match")
 
 
 def email_policy_check(email):

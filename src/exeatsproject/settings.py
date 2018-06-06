@@ -22,6 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = getattr(credentials, 'SECRET_KEY', 'xa4a3Pq#tKu*yAgH8X1xn&FT3NepT7Y9$tp%')
+SECRET_DEPLOY_KEY = getattr(credentials, 'SECRET_DEPLOY_KEY', False)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = getattr(credentials, 'DEBUG', False)

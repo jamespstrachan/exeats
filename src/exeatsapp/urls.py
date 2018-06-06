@@ -12,4 +12,5 @@ urlpatterns = [
     path('tutor/view/', views.view, name='view'),
     path('tutor/history/', views.history, name='history'),
     path('signup/<str:hash>', views.signup, name='signup'),
+    path('deploy', views.deploy, name='deploy'),
 ]
