@@ -23,7 +23,7 @@
           *
         </td>
         <td class="field">
-          <input value="{{ suggested_slot | date:"d/m/y h:i"}}" type="text" onkeypress="return event.keyCode != 13;" class="date" name="startingAt" id="fld_startingAt" />
+          <input value="{{ suggested_start | date:"d/m/y h:i"}}" type="text" onkeypress="return event.keyCode != 13;" class="date" name="startingAt" id="fld_startingAt" />
         </td>
       </tr>
       <tr>
@@ -34,7 +34,7 @@
           *
         </td>
         <td class="field">
-          <input value="" type="text" onkeypress="return event.keyCode != 13;" class="string" name="location" id="fld_location" />
+          <input value="{{suggested_location}}" type="text" onkeypress="return event.keyCode != 13;" class="string" name="location" id="fld_location" />
         </td>
       </tr>
     </table>
@@ -68,7 +68,7 @@
           *
         </td>
         <td class="field">
-          <input value="{{ suggested_slot | date:"d/m/y h:i"}}" type="text" onkeypress="return event.keyCode != 13;" class="date" name="startingAt" id="fld_startingAt" />
+          <input value="{{ suggested_start | date:"d/m/y h:i"}}" type="text" onkeypress="return event.keyCode != 13;" class="date" name="startingAt" id="fld_startingAt" />
         </td>
       </tr>
       <tr>
@@ -79,7 +79,7 @@
           *
         </td>
         <td class="field">
-          <input value="{{ suggested_slot | date:"d/m/y h:i"}}" type="text" onkeypress="return event.keyCode != 13;" class="date" name="endingAt" id="fld_endingAt" />
+          <input value="{{ suggested_end | date:"d/m/y h:i"}}" type="text" onkeypress="return event.keyCode != 13;" class="date" name="endingAt" id="fld_endingAt" />
         </td>
       </tr>
       <tr>
@@ -90,7 +90,7 @@
           *
         </td>
         <td class="field">
-          <input value="10" type="text" onkeypress="return event.keyCode != 13;" class="int" name="duration" id="fld_duration" /> minutes
+          <input value="{{suggested_duration}}" type="text" onkeypress="return event.keyCode != 13;" class="int" name="duration" id="fld_duration" /> minutes
         </td>
       </tr>
       <tr>
@@ -101,7 +101,7 @@
           *
         </td>
         <td class="field">
-          <input value="" type="text" onkeypress="return event.keyCode != 13;" class="string" name="location" id="fld_location" />
+          <input value="{{suggested_location}}" type="text" onkeypress="return event.keyCode != 13;" class="string" name="location" id="fld_location" />
         </td>
       </tr>
     </table>

@@ -5,6 +5,7 @@ import hmac
 import subprocess
 import re
 import http
+from statistics import mode, median, StatisticsError
 
 from django.shortcuts import render
 from django.template.loader import render_to_string
@@ -82,9 +83,27 @@ def times(request):
         return HttpResponseRedirect(reverse('exeatsapp:times'))
 
     midnight_today = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())
-    suggested_time = midnight_today + datetime.timedelta(hours=33)  # 9am tomorrow morning
+    suggested_start = midnight_today + datetime.timedelta(hours=33)  # 9am tomorrow morning
+
+    latest_slot = Slot.objects.filter(tutor=tutor_id).order_by('-start').first()
+    suggested_location = latest_slot.location if latest_slot else ''
+
+    if latest_slot:  # meaning if they have at least one slot
+        last_50_slot_times = Slot.objects.filter(tutor=tutor_id).order_by('-start').values_list('start', flat=True)[0:50]
+        minute_diffs = [(last_50_slot_times[i]-last_50_slot_times[i+1]).total_seconds() / 60
+                        for i in range(len(last_50_slot_times)-1)]
+        try:
+            suggested_duration = int(mode(minute_diffs))
+        except StatisticsError:  # if there's no unique most popular duration, use the middle one
+            suggested_duration = int(median(minute_diffs))
+    else:
+        suggested_duration = 10
+
     context = {
-        'suggested_slot': suggested_time,
+        'suggested_start': suggested_start,
+        'suggested_end': suggested_start + datetime.timedelta(hours=1),
+        'suggested_location': suggested_location,
+        'suggested_duration': suggested_duration,
         'slots': Slot.objects.filter(tutor=tutor_id, start__gte=get_midnight()).order_by('start')
     }
 
