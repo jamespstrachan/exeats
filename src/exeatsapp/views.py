@@ -250,7 +250,10 @@ def toggle_attended(request, id):
 @login_required
 def history(request):
     context = {
-        'slots': Slot.objects.filter(tutor=request.session['tutor_id'], start__lte=datetime.datetime.now()).order_by('-start')
+        'slots': Slot.objects.filter(tutor=request.session['tutor_id'],
+                                     start__lte=datetime.datetime.now(),
+                                     allocatedto__isnull=False
+                              ).order_by('-start')
     }
     return render(request, 'exeatsapp/history.html', context)
 
