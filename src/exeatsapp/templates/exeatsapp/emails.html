@@ -20,7 +20,10 @@
   earliest_recent_timestamp = d/1000|0;
 
   function map_checkboxes(f){
-    return [...document.getElementsByClassName('student_checkbox')].map(f)
+    checkboxes = document.getElementsByClassName('student_checkbox');
+    for(i=0; i<checkboxes.length; i++){
+      f(checkboxes[i]);
+    }
   }
 
   function recent(x){ return x.getAttribute('data-timestamp-last-slot') > earliest_recent_timestamp}
@@ -28,31 +31,31 @@
   function attended(x){ return x.getAttribute('data-timestamp-last-slot') == x.getAttribute('data-timestamp-last-attended')}
 
   function changeAll(checked){
-    map_checkboxes(x => x.checked = checked)
+    map_checkboxes(function(x){return x.checked = checked})
   }
 
   function selectNoResponse(){
-    map_checkboxes(x => x.checked = !recent(x))
+    map_checkboxes(function(x){return x.checked = !recent(x)})
   }
 
   function selectMissed(){
-    map_checkboxes(x => x.checked = recent(x) && !prospective(x) && !attended(x))
+    map_checkboxes(function(x){return x.checked = recent(x) && !prospective(x) && !attended(x)})
   }
 
   function selectSeen(){
-    map_checkboxes(x => x.checked = recent(x) && !prospective(x) && attended(x))
+    map_checkboxes(function(x){return x.checked = recent(x) && !prospective(x) && attended(x)})
   }
 
   function selectProspective(){
-    map_checkboxes(x => x.checked = prospective(x))
+    map_checkboxes(function(x){return x.checked = prospective(x)})
   }
 
   function selectInverse(){
-    map_checkboxes(x => x.checked = !x.checked)
+    map_checkboxes(function(x){return x.checked = !x.checked})
   }
 
   function composeLink() {
-    mailto = 'mailto:{{ tutor.name }}<{{ tutor.email }}>?bcc=' + map_checkboxes(x => x.getAttribute('data-email')).join(', ');
+    mailto = 'mailto:{{ tutor.name }}<{{ tutor.email }}>?bcc=' + map_checkboxes(function(x){return x.getAttribute('data-email')}).join(', ');
     document.getElementById('emailLink').href = mailto
   }
 </script>

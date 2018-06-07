@@ -28,15 +28,18 @@
 
 <script type="text/javascript">
   function map_checkboxes(f){
-    return [...document.getElementsByClassName('checkbox')].map(f)
+    checkboxes = document.getElementsByClassName('checkbox');
+    for(i=0; i<checkboxes.length; i++){
+      f(checkboxes[i]);
+    }
   }
 
   function changeAll(checked){
-    map_checkboxes(x => x.checked = checked)
+    map_checkboxes(function(x){return x.checked = checked})
   }
 
   function selectInverse(){
-    map_checkboxes(x => x.checked = !x.checked)
+    map_checkboxes(function(x){return x.checked = !x.checked})
   }
 </script>
 
