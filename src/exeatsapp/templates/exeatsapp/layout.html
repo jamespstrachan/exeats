@@ -447,6 +447,9 @@ li a:active {
 .slot_attended_icon .no,
 .slot_attended_icon.confirmed .yes { display: inline-block }
 
+.show_free_slots + table .free_slot {display:none}
+.show_free_slots:checked + table .free_slot {display:table-row}
+
     </style>
     <!--[if IE]><style type="text/css"> * { word-wrap: break-word; } </style> <![endif]-->
   </head>

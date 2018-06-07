@@ -11,9 +11,12 @@
   Below is the list of terminal exeat times and the students who have signed up.
 {% endif %}
 </p>
+<label for="show_free_slots">Show free slots</label>
+{# the input and table below need to be immediately adjacent for css visibility switching to work #}
+<input type="checkbox" class="show_free_slots" id="show_free_slots">
 <table>
 {% for slot in slots %}
-  <tr>
+  <tr class="{% if not slot.allocatedto %}free_slot{% endif %}">
     <td>
       {{ slot.start | date:'SHORT_DATETIME_FORMAT' }}
     </td>
