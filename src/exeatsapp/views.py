@@ -217,7 +217,8 @@ def emails(request):
             email = EmailMessage(subject, body, f'{settings.SYSTEM_FROM_NAME}<{settings.SYSTEM_FROM_EMAIL}>',
                                  [to_email], headers = {'Reply-To': tutor.email})
             email.send()
-        return render(request, 'exeatsapp/emailsdelivered.html')
+        messages.add_message(request, messages.INFO, '{} email{} sent'.format(len(students), '' if len(students)==1 else 's'))
+        return HttpResponseRedirect(reverse('exeatsapp:emails'))
 
     context = {
         'students': Student.objects.filter(tutor=request.session['tutor_id'])
