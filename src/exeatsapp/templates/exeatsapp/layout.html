@@ -442,6 +442,11 @@ li a:active {
 
 .slot_attended_icon { font-weight: normal; color: #ccc; }
 .slot_attended_icon.confirmed { font-weight: bold; color: green;}
+.slot_attended_icon .yes,
+.slot_attended_icon.confirmed .no { display: none }
+.slot_attended_icon .no,
+.slot_attended_icon.confirmed .yes { display: inline-block }
+
     </style>
     <!--[if IE]><style type="text/css"> * { word-wrap: break-word; } </style> <![endif]-->
   </head>
@@ -530,5 +535,18 @@ li a:active {
         </div>
       </div>
     </div>
+
+  <script type="text/javascript">
+  function toggle_attended(element, slot_id) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+      if (xmlhttp.readyState == XMLHttpRequest.DONE && xmlhttp.status == 200) {
+        element.classList.toggle('confirmed');
+      }
+    };
+    xmlhttp.open("GET", element.getAttribute("href"), true);
+    xmlhttp.send();
+  }
+  </script>
   </body>
 </html>
