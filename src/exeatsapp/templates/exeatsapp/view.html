@@ -23,6 +23,10 @@
     <td>
       {% if slot.allocatedto %}
       <a href="mailto:{{ slot.allocatedto.email }}">{{ slot.allocatedto.name }}</a>
+        {# apology message to poor test subject #}
+        {% if slot.allocatedto.id == 7894 %}
+          (sorry Daisy!)
+        {% endif %}
       {% else %}
       <em>available</em>
       {% endif %}
