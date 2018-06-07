@@ -450,6 +450,32 @@ li a:active {
 .show_free_slots + table .free_slot {display:none}
 .show_free_slots:checked + table .free_slot {display:table-row}
 
+.alert {
+  display:block;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 4px 20px 4px 8px;
+  background-color: rgba(147, 193, 36, 0.3);
+  margin-left: -8px;
+  margin-bottom: 2px;
+}
+.alert::after {
+  content:'×';
+  display:block;
+  position:absolute;
+  cursor: pointer;
+  top: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  padding: 0px 2px;
+  color:white;
+  font-size: 140%;
+  text-align: center;
+}
+.alert_checkbox {display:none;}
+.alert_checkbox:checked + .alert {display:none;}
     </style>
     <!--[if IE]><style type="text/css"> * { word-wrap: break-word; } </style> <![endif]-->
   </head>
@@ -460,6 +486,10 @@ li a:active {
           <div id="layout-float-wrapper">
             <div id="layout-center">
               <div class="layout-clear-header"></div>
+              {% for message in messages %}
+              <input type="checkbox" class="alert_checkbox" id="alert_{{forloop.counter}}">
+              <label for="alert_{{forloop.counter}}" class="alert alert-{{ message.level_tag }} {{ message.extra_tags }} ">{{ message }}</label>
+              {% endfor %}
               {% block content %}{% endblock %}
               <div class="layout-clear-footer"></div>
             </div>

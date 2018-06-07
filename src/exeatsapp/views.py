@@ -10,6 +10,7 @@ from statistics import mode, median, StatisticsError
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -69,15 +70,20 @@ def times(request):
             tutor = Tutor.objects.get(id=tutor_id)
 
             first = True
+            slot_count = 0
             while first or start < end:
                 first = False
                 slot = Slot.objects.create(start=start, location=request.POST['location'], tutor=tutor)
                 slot.save()
+                slot_count += 1
                 start += datetime.timedelta(minutes=int(duration))
+
+            messages.add_message(request, messages.INFO, '{} time slot{} added'.format(slot_count, '' if slot_count==1 else 's'))
 
         if request.POST.get('submitted', False) == 'currentTimes':
             slot_ids = [k[5:] for k,v in request.POST.items() if k[0:5] == 'slot_']
             slots = Slot.objects.filter(id__in=slot_ids, tutor=tutor_id)
+            messages.add_message(request, messages.INFO, '{} time slot{} deleted'.format(len(slots), '' if len(slots)==1 else 's'))
             slots.delete()
 
         return HttpResponseRedirect(reverse('exeatsapp:times'))
@@ -126,19 +132,28 @@ def update_students(request):
 
     # handle addition of new students
     csv_string = request.POST.get('csvText', False)
+    student_count = 0
+    skipped_count = 0
     if csv_string:
         tutor = Tutor.objects.get(id=tutor_id)
         for (name, email) in parse_student_details(csv_string):
             email = email if '@' in email else f'{email}@cam.ac.uk'
             if not Student.objects.filter(email=email):
                 student = Student.objects.create(name=name, email=email, tutor=tutor)
+                student_count += 1
                 student.save()
+            else:
+                skipped_count += 1
+
+        skipped_details = ', {} skipped as they have already been added'.format(skipped_count) if skipped_count else ''
+        messages.add_message(request, messages.INFO, '{} student{} added{}'.format(student_count, '' if student_count==1 else 's', skipped_details))
 
     # handle removal of existing students
     if request.POST.get('submitted', False) == 'students':
         student_ids = [k[8:] for k,v in request.POST.items() if k[0:8] == 'student_']
         students = Student.objects.filter(id__in=student_ids, tutor=tutor_id)
         students.delete()
+        messages.add_message(request, messages.INFO, '{} student{} deleted'.format(len(student_ids), '' if len(student_ids)==1 else 's'))
 
     return HttpResponseRedirect(reverse('exeatsapp:students'))
 
