@@ -6,6 +6,7 @@ import subprocess
 import re
 import http
 from statistics import mode, median, StatisticsError
+from smtplib import SMTPDataError
 
 from django.shortcuts import render
 from django.template.loader import render_to_string
@@ -216,8 +217,13 @@ def emails(request):
             body = body_template.replace('[link]', get_url_for_student(student))
             email = EmailMessage(subject, body, f'{settings.SYSTEM_FROM_NAME}<{settings.SYSTEM_FROM_EMAIL}>',
                                  [to_email], headers = {'Reply-To': tutor.email})
-            email.send()
-        messages.add_message(request, messages.INFO, '{} email{} sent'.format(len(students), '' if len(students)==1 else 's'))
+            try:
+                email.send()
+                message_text = '{} email{} sent'.format(len(students), '' if len(students)==1 else 's')
+            except SMTPDataError:
+                message_text = 'Email sending failed. This normally means we have hit a daily sending limit.'
+
+            messages.add_message(request, messages.INFO, message_text)
         return HttpResponseRedirect(reverse('exeatsapp:emails'))
 
     context = {
@@ -252,7 +258,13 @@ def signup(request, hash):
             to_email = email_policy_check(student.email)
             email = EmailMessage(subject, body, f'{settings.SYSTEM_FROM_NAME}<{settings.SYSTEM_FROM_EMAIL}>',
                                  [to_email])
-            email.send()
+            try:
+                email.send()
+                message_text = 'Slot booked. We have sent you a confirmation by email.'
+            except SMTPDataError:
+                message_text = 'Slot booked. We were unable to send an email confirmation.'
+
+            messages.add_message(request, messages.INFO, message_text)
         else:
             raise Http404('slot not found')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
