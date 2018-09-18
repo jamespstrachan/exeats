@@ -137,16 +137,15 @@ SHORT_DATETIME_FORMAT = "H:i D j M Y"
 STATIC_URL = '/static/'
 
 # todo - consider re-implementing Tutor as base auth model
-#AUTH_USER_MODEL = 'exeatsapp.Tutor'
+# AUTH_USER_MODEL = 'exeatsapp.Tutor'
 
-# Email via gmail smtp, cf: https://stackoverflow.com/a/23402208
-EMAIL_HOST          = 'smtp.gmail.com'
+EMAIL_HOST          = credentials.EMAIL_HOST
 EMAIL_HOST_USER     = credentials.EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = credentials.EMAIL_HOST_PASSWORD
 EMAIL_PORT          = 587
 EMAIL_USE_TLS       = True
 
-SYSTEM_FROM_EMAIL = 'exeatsystem@gmail.com'
+SYSTEM_FROM_EMAIL = 'no-reply@exeats.com'
 SYSTEM_FROM_NAME  = 'Exeat System'
 ## If set all system emails will be sent here
-#ALL_EMAILS_TO     = 'jamespstrachan+exeats@gmail.com'
+# ALL_EMAILS_TO     = 'someone@gmail.com'

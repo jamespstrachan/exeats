@@ -1,6 +1,6 @@
 # Usage:
-#   Build image:   docker build -t djangoapp .
-#   Run image:     docker run -ti --name djangoapp -v "$(pwd)":/app -p 80:80 --rm djangoapp
+#   Build image:   docker build -t exeats .
+#   Run image:     docker run -ti --name exeats --rm -p 80:80 -p 81:81 -v "$(pwd)":/app exeats
 
 FROM python:3.6.5
 
