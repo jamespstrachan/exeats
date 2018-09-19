@@ -138,7 +138,7 @@ def update_students(request):
     if csv_string:
         tutor = Tutor.objects.get(id=tutor_id)
         for (name, email) in parse_student_details(csv_string):
-            email = email if '@' in email else f'{email}@cam.ac.uk'
+            email = email if '@' in email else '{}@cam.ac.uk'.format(email)
             if not Student.objects.filter(email=email):
                 student = Student.objects.create(name=name, email=email, tutor=tutor)
                 student_count += 1
@@ -176,7 +176,7 @@ def parse_student_details(raw_string):
     for line in raw_string.split('\n'):
         parts = list(map(str.strip, line.split(',')))
         if len(parts) == 3:
-            name = f'{parts[1]} {parts[0]}'
+            name = '{} {}'.format(parts[1], parts[0])
             email = parts[2]
         else:
             name = parts[0]
@@ -215,7 +215,8 @@ def emails(request):
         for student in students:
             to_email = email_policy_check(student.email)
             body = body_template.replace('[link]', get_url_for_student(student))
-            email = EmailMessage(subject, body, f'{settings.SYSTEM_FROM_NAME}<{settings.SYSTEM_FROM_EMAIL}>',
+            email = EmailMessage(subject, body,
+                                 '{}<{}>'.format(settings.SYSTEM_FROM_NAME, settings.SYSTEM_FROM_EMAIL),
                                  [to_email], headers = {'Reply-To': tutor.email})
             try:
                 email.send()
@@ -256,7 +257,8 @@ def signup(request, hash):
             subject  = 'Terminal exeat confirmation'
             body     = render_to_string('exeatsapp/emailconfirmation.html', {'slot': slot, 'url': get_url_for_student(student)})
             to_email = email_policy_check(student.email)
-            email = EmailMessage(subject, body, f'{settings.SYSTEM_FROM_NAME}<{settings.SYSTEM_FROM_EMAIL}>',
+            email = EmailMessage(subject, body,
+                                 '{}<{}>'.format(settings.SYSTEM_FROM_NAME, settings.SYSTEM_FROM_EMAIL),
                                  [to_email])
             try:
                 email.send()

@@ -3,4 +3,5 @@
 !README.txt
 /src/db.sqlite3
 __pycache__
+*.pyc
 /src/credentials.py
