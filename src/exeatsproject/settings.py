@@ -28,17 +28,17 @@ SECRET_DEPLOY_KEY = getattr(credentials, 'SECRET_DEPLOY_KEY', False)
 DEBUG = getattr(credentials, 'DEBUG', False)
 
 ALLOWED_HOSTS = getattr(credentials, 'ALLOWED_HOSTS', [])
-BASE_URL =  getattr(credentials, 'BASE_URL', 'http://www.exeats.com')
+BASE_URL = getattr(credentials, 'BASE_URL', 'http://www.exeats.com')
 
 # Application definition
 
 INSTALLED_APPS = [
-#    'django.contrib.admin',
+    # 'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-#    'django.contrib.staticfiles',
+    # 'django.contrib.staticfiles',
     'exeatsapp',
 ]
 
@@ -47,7 +47,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-#    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # 'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -146,6 +146,6 @@ EMAIL_PORT          = 587
 EMAIL_USE_TLS       = True
 
 SYSTEM_FROM_EMAIL = 'no-reply@exeats.com'
-SYSTEM_FROM_NAME  = 'Exeat System'
-## If set all system emails will be sent here
+SYSTEM_FROM_NAME  = 'Booking System'
+# If set all system emails will be sent here
 # ALL_EMAILS_TO     = 'someone@gmail.com'

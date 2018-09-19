@@ -1,5 +1,4 @@
 import datetime
-import csv
 import hashlib
 import hmac
 import subprocess
@@ -10,7 +9,6 @@ from smtplib import SMTPDataError
 
 from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, Http404
 from django.urls import reverse
@@ -22,8 +20,10 @@ from django.db.models import Max, Q
 
 from .models import Tutor, Slot, Student
 
+
 def home(request):
     return render(request, 'exeatsapp/home.html')
+
 
 # todo - do we need to exempt this still or could we add a token to the login form?
 @csrf_exempt
@@ -33,19 +33,20 @@ def login(request):
         try:
             tutor = Tutor.objects.get(email=request.POST['__email'])
             if tutor.password == request.POST['__password']:
-                request.session['tutor_id'] = tutor.id;
-                request.session['tutor_email'] = tutor.email;
+                request.session['tutor_id'] = tutor.id
+                request.session['tutor_email'] = tutor.email
                 return HttpResponseRedirect(reverse('exeatsapp:home'))
         except Tutor.DoesNotExist:
             pass
-        context['login_failed'] = True;
+        context['login_failed'] = True
     return render(request, 'exeatsapp/login.html', context)
 
 
 def logout(request):
-    del request.session['tutor_id'];
-    del request.session['tutor_email'];
+    del request.session['tutor_id']
+    del request.session['tutor_email']
     return render(request, 'exeatsapp/logout.html')
+
 
 def login_required(view):
     def wrap(request, *args, **kwargs):
@@ -53,6 +54,7 @@ def login_required(view):
             return view(request, *args, **kwargs)
         return HttpResponseRedirect(reverse('exeatsapp:login'))
     return wrap
+
 
 @login_required
 def times(request):
@@ -74,17 +76,21 @@ def times(request):
             slot_count = 0
             while first or start < end:
                 first = False
-                slot = Slot.objects.create(start=start, location=request.POST['location'], tutor=tutor)
+                slot = Slot.objects.create(start=start,
+                                           location=request.POST['location'],
+                                           tutor=tutor)
                 slot.save()
                 slot_count += 1
                 start += datetime.timedelta(minutes=int(duration))
 
-            messages.add_message(request, messages.INFO, '{} time slot{} added'.format(slot_count, '' if slot_count==1 else 's'))
+            message = '{} time slot{} added'.format(slot_count, '' if slot_count == 1 else 's')
+            messages.add_message(request, messages.INFO, message)
 
         if request.POST.get('submitted', False) == 'currentTimes':
-            slot_ids = [k[5:] for k,v in request.POST.items() if k[0:5] == 'slot_']
+            slot_ids = [k[5:] for k, v in request.POST.items() if k[0:5] == 'slot_']
             slots = Slot.objects.filter(id__in=slot_ids, tutor=tutor_id)
-            messages.add_message(request, messages.INFO, '{} time slot{} deleted'.format(len(slots), '' if len(slots)==1 else 's'))
+            message = '{} time slot{} deleted'.format(len(slots), '' if len(slots) == 1 else 's')
+            messages.add_message(request, messages.INFO, message)
             slots.delete()
 
         return HttpResponseRedirect(reverse('exeatsapp:times'))
@@ -96,9 +102,11 @@ def times(request):
     suggested_location = latest_slot.location if latest_slot else ''
 
     if latest_slot:  # meaning if they have at least one slot
-        last_50_slot_times = Slot.objects.filter(tutor=tutor_id).order_by('-start').values_list('start', flat=True)[0:50]
-        minute_diffs = [(last_50_slot_times[i]-last_50_slot_times[i+1]).total_seconds() / 60
-                        for i in range(len(last_50_slot_times)-1)]
+        last_50_slot_times = Slot.objects.filter(tutor=tutor_id) \
+                                 .order_by('-start') \
+                                 .values_list('start', flat=True)[0:50]
+        minute_diffs = [(last_50_slot_times[i] - last_50_slot_times[i + 1]).total_seconds() / 60
+                        for i in range(len(last_50_slot_times) - 1)]
         try:
             suggested_duration = int(mode(minute_diffs))
         except StatisticsError:  # if there's no unique most popular duration, use the middle one
@@ -128,6 +136,7 @@ def students(request):
     }
     return render(request, 'exeatsapp/students.html', context)
 
+
 def update_students(request):
     tutor_id = request.session.get('tutor_id')
 
@@ -146,15 +155,21 @@ def update_students(request):
             else:
                 skipped_count += 1
 
-        skipped_details = ', {} skipped as they have already been added'.format(skipped_count) if skipped_count else ''
-        messages.add_message(request, messages.INFO, '{} student{} added{}'.format(student_count, '' if student_count==1 else 's', skipped_details))
+        skipped_details = ', {} skipped as they have already been added'.format(skipped_count) \
+                          if skipped_count else ''
+        message = '{} student{} added{}'.format(student_count,
+                                                '' if student_count == 1 else 's',
+                                                skipped_details)
+        messages.add_message(request, messages.INFO, message)
 
     # handle removal of existing students
     if request.POST.get('submitted', False) == 'students':
-        student_ids = [k[8:] for k,v in request.POST.items() if k[0:8] == 'student_']
+        student_ids = [k[8:] for k, v in request.POST.items() if k[0:8] == 'student_']
         students = Student.objects.filter(id__in=student_ids, tutor=tutor_id)
         students.delete()
-        messages.add_message(request, messages.INFO, '{} student{} deleted'.format(len(student_ids), '' if len(student_ids)==1 else 's'))
+        message = '{} student{} deleted'.format(len(student_ids),
+                                                '' if len(student_ids) == 1 else 's')
+        messages.add_message(request, messages.INFO, message)
 
     return HttpResponseRedirect(reverse('exeatsapp:students'))
 
@@ -232,7 +247,8 @@ def emails(request):
     context = {
         'students': Student.objects.filter(tutor=request.session['tutor_id'])
                                    .annotate(last_slot=Max('slot__start'))
-                                   .annotate(last_attended=Max('slot__start', filter=Q(slot__attended=True)))
+                                   .annotate(last_attended=Max('slot__start',
+                                                               filter=Q(slot__attended=True)))
                                    .order_by('name'),
         'tutor': tutor,
     }
@@ -245,22 +261,25 @@ def signup(request, hash):
         raise Http404('link appears to be invalid')
 
     if request.method == 'POST':
-        slot_id = [k[5:] for k,v in request.POST.items() if k[0:5] == 'slot_'][0]
+        slot_id = [k[5:] for k, v in request.POST.items() if k[0:5] == 'slot_'][0]
         slot = Slot.objects.get(id=slot_id, tutor=student.tutor.id, allocatedto=None)
         if slot:
             # un-book any booked future slots
-            existing_bookings = Slot.objects.filter(allocatedto=student.id, start__gte=datetime.datetime.now())
+            existing_bookings = Slot.objects.filter(allocatedto=student.id,
+                                                    start__gte=datetime.datetime.now())
             for booking in existing_bookings:
                 booking.allocatedto = None
                 booking.save()
             # book chosen slot
             slot.allocatedto = student
             slot.save()
-            subject  = 'Terminal exeat confirmation'
-            body     = render_to_string('exeatsapp/emailconfirmation.html', {'slot': slot, 'url': get_url_for_student(student)})
+            subject  = 'Booking confirmation'
+            context  = {'slot': slot, 'url': get_url_for_student(student)}
+            body     = render_to_string('exeatsapp/emailconfirmation.html', context)
             to_email = email_policy_check(student.email)
             email = EmailMessage(subject, body,
-                                 '{}<{}>'.format(settings.SYSTEM_FROM_NAME, settings.SYSTEM_FROM_EMAIL),
+                                 '{}<{}>'.format(settings.SYSTEM_FROM_NAME,
+                                                 settings.SYSTEM_FROM_EMAIL),
                                  [to_email])
             try:
                 email.send()
@@ -275,17 +294,25 @@ def signup(request, hash):
 
     context = {
         'student': student,
-        'chosen_slot': Slot.objects.filter(allocatedto=student.id, start__gte=datetime.datetime.now()).first(),
-        'slots': Slot.objects.filter(tutor=student.tutor.id, start__gte=datetime.datetime.now()).order_by('start')
+        'chosen_slot': Slot.objects.filter(allocatedto=student.id,
+                                           start__gte=datetime.datetime.now()
+                                           ).first(),
+        'slots': Slot.objects.filter(tutor=student.tutor.id,
+                                     start__gte=datetime.datetime.now()
+                                     ).order_by('start')
     }
     return render(request, 'exeatsapp/signup.html', context)
+
 
 @login_required
 def view(request):
     context = {
-        'slots': Slot.objects.filter(tutor=request.session['tutor_id'], start__gte=get_midnight()).order_by('start')
+        'slots': Slot.objects.filter(tutor=request.session['tutor_id'],
+                                     start__gte=get_midnight()
+                                     ).order_by('start')
     }
     return render(request, 'exeatsapp/view.html', context)
+
 
 @login_required
 def toggle_attended(request, id):
@@ -298,13 +325,14 @@ def toggle_attended(request, id):
     slot.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+
 @login_required
 def history(request):
     context = {
         'slots': Slot.objects.filter(tutor=request.session['tutor_id'],
                                      start__lte=datetime.datetime.now(),
                                      allocatedto__isnull=False
-                              ).order_by('-start')
+                                     ).order_by('-start')
     }
     return render(request, 'exeatsapp/history.html', context)
 
