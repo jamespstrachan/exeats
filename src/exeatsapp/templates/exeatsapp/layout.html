@@ -3,6 +3,9 @@
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <title>Welcome</title>
+
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.css" integrity="sha256-AbZqn2w4KXugIvUu6QtV4nK4KlXj4nrIp6x/8S4Xg2U=" crossorigin="anonymous" />
     <style type="text/css">
 
 html, body {
@@ -573,7 +576,22 @@ li a:active {
       </div>
     </div>
 
-  <script type="text/javascript">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.js" integrity="sha256-gQzieXjKD85Ibbpg4l8GduIagpt4oUSQRYaDaLd+8sI=" crossorigin="anonymous"></script>
+  <script>
+
+  $( function() {
+    $(".datetimepicker").datetimepicker({
+      controlType: 'select',
+      oneLine: true,
+      dateFormat: 'dd/mm/y',
+      timeFormat: 'HH:mm',
+      stepMinute: 5
+    });
+  } );
+
   function toggle_attended(element, slot_id) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
