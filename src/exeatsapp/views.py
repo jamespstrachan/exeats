@@ -208,21 +208,23 @@ def emails(request):
     tutor = Tutor.objects.get(id=tutor_id)
     if request.method == 'POST':
         body_template = request.POST.get('emailBody', False)
-        student_ids = [k[8:] for k,v in request.POST.items() if k[0:8] == 'student_']
+        student_ids = [k[8:] for k, v in request.POST.items() if k[0:8] == 'student_']
         students = Student.objects.filter(id__in=student_ids, tutor=tutor_id)
 
-        subject = 'Terminal exeat signup'
+        subject = request.POST['subject']
+        from_email = '{}<{}>'.format(settings.SYSTEM_FROM_NAME, settings.SYSTEM_FROM_EMAIL)
+        headers    = {'Reply-To': tutor.email}
         for student in students:
             to_email = email_policy_check(student.email)
-            body = body_template.replace('[link]', get_url_for_student(student))
-            email = EmailMessage(subject, body,
-                                 '{}<{}>'.format(settings.SYSTEM_FROM_NAME, settings.SYSTEM_FROM_EMAIL),
-                                 [to_email], headers = {'Reply-To': tutor.email})
+            body     = body_template.replace('[link]', get_url_for_student(student))
+            email    = EmailMessage(subject, body, from_email, [to_email], headers=headers)
             try:
                 email.send()
-                message_text = '{} email{} sent'.format(len(students), '' if len(students)==1 else 's')
+                message_text = '{} email{} sent'.format(len(students),
+                                                        '' if len(students) == 1 else 's')
             except SMTPDataError:
-                message_text = 'Email sending failed. This normally means we have hit a daily sending limit.'
+                message_text = 'Email sending failed. ' + \
+                               'This normally means we have hit a daily sending limit.'
 
             messages.add_message(request, messages.INFO, message_text)
         return HttpResponseRedirect(reverse('exeatsapp:emails'))
