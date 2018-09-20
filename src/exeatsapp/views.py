@@ -68,8 +68,8 @@ def times(request):
                 end = timezone.make_aware(end)
             else:
                 end = start
-            duration = request.POST.get('duration', 10)
-            duration = duration if duration else 10
+            duration = int(request.POST.get('duration', 10))
+            duration = duration if duration >= 1 else 10
             tutor = Tutor.objects.get(id=tutor_id)
 
             first = True
