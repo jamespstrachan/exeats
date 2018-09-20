@@ -138,7 +138,7 @@
 
         </td>
         <td class="field">
-          <input value="true" type="checkbox" onkeypress="return event.keyCode != 13;" class="checkbox" name="slot_{{ slot.id }}" id="fld_slot_MBGH7V46" />
+          <input value="true" type="checkbox" onkeypress="return event.keyCode != 13;" class="checkbox" name="slot_{{ slot.id }}"/>
           {{ slot.start | date:'SHORT_DATETIME_FORMAT' }} in {{ slot.location }} ({% if slot.allocatedto %}{{slot.allocatedto.name}}{% else %}free{% endif %})
         </td>
       </tr>
@@ -153,5 +153,6 @@
     <div class="clear"></div>
   </div>
 </form>
+
 {% endif %}
 {% endblock %}

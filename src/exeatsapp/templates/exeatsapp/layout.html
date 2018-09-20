@@ -582,7 +582,7 @@ li a:active {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.js" integrity="sha256-gQzieXjKD85Ibbpg4l8GduIagpt4oUSQRYaDaLd+8sI=" crossorigin="anonymous"></script>
   <script>
 
-  $( function() {
+  $(function() {
     $(".datetimepicker").datetimepicker({
       controlType: 'select',
       oneLine: true,
@@ -590,7 +590,27 @@ li a:active {
       timeFormat: 'HH:mm',
       stepMinute: 5
     });
-  } );
+
+    // range selection for checkboxes within a form
+    $('body').on('click', '.checkbox', function(e){
+      $checkboxes   = $(this).parents('form').find('.checkbox')
+      $old_checkbox = $checkboxes.filter('.last_checkbox_clicked').removeClass('last_checkbox_clicked')
+      $new_checkbox = $(this).addClass('last_checkbox_clicked')
+      if( e.shiftKey )
+      {
+        $checkboxes.each(function(){
+          index     = $checkboxes.index($(this))
+          old_index = $checkboxes.index($old_checkbox)
+          new_index = $checkboxes.index($new_checkbox)
+          if( index < Math.max(old_index, new_index) && index > Math.min(old_index, new_index))
+          {
+            $(this).prop('checked', $new_checkbox.prop('checked'))
+            $old_checkbox.prop('checked', $new_checkbox.prop('checked'))
+          }
+        })
+      }
+    })
+  });
 
   function toggle_attended(element, slot_id) {
     var xmlhttp = new XMLHttpRequest();
@@ -602,6 +622,7 @@ li a:active {
     xmlhttp.open("GET", element.getAttribute("href"), true);
     xmlhttp.send();
   }
+
   </script>
   </body>
 </html>

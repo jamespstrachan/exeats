@@ -119,7 +119,7 @@ Regards,
         </td>
         <td class="field">
           {% for student in students %}
-          <input class="student_checkbox" type="checkbox" onkeypress="return event.keyCode != 13;" class="checkbox" name="student_{{ student.id }}"
+          <input class="checkbox student_checkbox" type="checkbox" onkeypress="return event.keyCode != 13;" class="checkbox" name="student_{{ student.id }}"
             data-email="{{ student.email }}"
             data-timestamp-last-slot="{{student.last_slot | date:'U'}}"
             data-timestamp-last-attended="{{student.last_attended | date:'U'}}" />
