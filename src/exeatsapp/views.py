@@ -188,7 +188,7 @@ def parse_student_details(raw_string):
         return details
 
     details = []
-    for line in raw_string.split('\n'):
+    for line in str.strip(raw_string).split('\n'):
         parts = list(map(str.strip, line.split(',')))
         if len(parts) == 3:
             name = '{} {}'.format(parts[1], parts[0])
