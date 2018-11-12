@@ -4,8 +4,10 @@ import hmac
 import subprocess
 import re
 import http
+import json
+import smtplib
+from email.mime.text import MIMEText
 from statistics import mode, median, StatisticsError
-from smtplib import SMTPDataError
 
 from django.shortcuts import render
 from django.template.loader import render_to_string
@@ -217,31 +219,61 @@ def get_url_for_student(student):
     return settings.BASE_URL + reverse('exeatsapp:signup', kwargs={'hash': hash})
 
 
+def is_mailgun():
+    """ returns true if we are using mailgun as our smtp host """
+    return 'mailgun' in settings.EMAIL_HOST
+
+
 @login_required
 def emails(request):
     tutor_id = request.session.get('tutor_id')
     tutor = Tutor.objects.get(id=tutor_id)
     if request.method == 'POST':
         body_template = request.POST.get('emailBody', False)
-        student_ids = [k[8:] for k, v in request.POST.items() if k[0:8] == 'student_']
-        students = Student.objects.filter(id__in=student_ids, tutor=tutor_id)
+        student_ids   = [k[8:] for k, v in request.POST.items() if k[0:8] == 'student_']
+        students      = Student.objects.filter(id__in=student_ids, tutor=tutor_id)
 
-        subject = request.POST['subject']
+        subject    = request.POST['subject']
         from_email = '{}<{}>'.format(settings.SYSTEM_FROM_NAME, settings.SYSTEM_FROM_EMAIL)
         headers    = {'Reply-To': tutor.email}
-        for student in students:
-            to_email = email_policy_check(student.email)
-            body     = body_template.replace('[link]', get_url_for_student(student))
-            email    = EmailMessage(subject, body, from_email, [to_email], headers=headers)
-            try:
-                email.send()
-                message_text = '{} email{} sent'.format(len(students),
-                                                        '' if len(students) == 1 else 's')
-            except SMTPDataError:
-                message_text = 'Email sending failed. ' + \
-                               'This normally means we have hit a daily sending limit.'
+        recipient_vars = {}
+        try:
+            for student in students:
+                to_email = email_policy_check(student.email)
+                link     = get_url_for_student(student)
+                if is_mailgun():  # for mailgun we build a list for a single-request multi-send
+                    recipient_vars[to_email] = {'link': link}
+                else:  # for regular smtp we make a request per student
+                    body  = body_template.replace('[link]', link)
+                    email = EmailMessage(subject, body, from_email, [to_email], headers=headers)
+                    email.send()
 
-            messages.add_message(request, messages.INFO, message_text)
+            if is_mailgun():
+                # to use mailgun's batch sending feature we need to pass a separate To: header on
+                # the message from that we give in the RCPT handshake, so we need to use a lower-
+                # level smtplib class.
+                # https://documentation.mailgun.com/en/latest/user_manual.html#batch-sending
+                body           = body_template.replace('[link]', '%recipient.link%')
+                msg            = MIMEText(body)
+                msg['Subject'] = subject
+                msg['From']    = from_email
+                msg['To']      = "%recipient%"
+                rcpt_to        = list(recipient_vars.keys())
+                # todo - Docs suggest 998 char limit but testing shows effective with 1394
+                #        I suspect email.policy.SMTP.fold is already being called here
+                msg['X-Mailgun-Recipient-Variables'] = json.dumps(recipient_vars)
+                smtp = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+                smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+                smtp.sendmail(settings.SYSTEM_FROM_EMAIL, rcpt_to, msg.as_string())
+                smtp.quit()
+
+            message_text = '{} email{} sent'.format(len(students),
+                                                    '' if len(students) == 1 else 's')
+        except smtplib.SMTPDataError:
+            message_text = 'Email sending failed. ' + \
+                           'This normally means we have hit a daily sending limit.'
+
+        messages.add_message(request, messages.INFO, message_text)
         return HttpResponseRedirect(reverse('exeatsapp:emails'))
 
     context = {
@@ -284,7 +316,7 @@ def signup(request, hash):
             try:
                 email.send()
                 message_text = 'Slot booked. We have sent you a confirmation by email.'
-            except SMTPDataError:
+            except smtplib.SMTPDataError:
                 message_text = 'Slot booked. We were unable to send an email confirmation.'
 
             messages.add_message(request, messages.INFO, message_text)
