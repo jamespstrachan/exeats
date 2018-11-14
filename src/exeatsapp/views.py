@@ -269,9 +269,9 @@ def emails(request):
 
             message_text = '{} email{} sent'.format(len(students),
                                                     '' if len(students) == 1 else 's')
-        except smtplib.SMTPDataError:
+        except (smtplib.SMTPDataError, smtplib.SMTPAuthenticationError) as e:
             message_text = 'Email sending failed. ' + \
-                           'This normally means we have hit a daily sending limit.'
+                           'This normally means we have hit a daily or hourly sending limit.'
 
         messages.add_message(request, messages.INFO, message_text)
         return HttpResponseRedirect(reverse('exeatsapp:emails'))
@@ -294,7 +294,7 @@ def signup(request, hash):
 
     if request.method == 'POST':
         slot_id = [k[5:] for k, v in request.POST.items() if k[0:5] == 'slot_'][0]
-        slot = Slot.objects.get(id=slot_id, tutor=student.tutor.id, allocatedto=None)
+        slot = Slot.objects.filter(id=slot_id, tutor=student.tutor.id, allocatedto=None).first()
         if slot:
             # un-book any booked future slots
             existing_bookings = Slot.objects.filter(allocatedto=student.id,
@@ -316,12 +316,13 @@ def signup(request, hash):
             try:
                 email.send()
                 message_text = 'Slot booked. We have sent you a confirmation by email.'
-            except smtplib.SMTPDataError:
+            except (smtplib.SMTPDataError, smtplib.SMTPAuthenticationError) as e:
                 message_text = 'Slot booked. We were unable to send an email confirmation.'
 
-            messages.add_message(request, messages.INFO, message_text)
         else:
-            raise Http404('slot not found')
+            message_text = 'Booking slot not available, please choose a different slot.'
+
+        messages.add_message(request, messages.INFO, message_text)
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     context = {
