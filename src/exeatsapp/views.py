@@ -185,13 +185,34 @@ def parse_student_details(raw_string):
         3) 'Smith, Alice, alice@smith.com
             Smith, Bob, bob@smith.com'
     """
+    # Try to detect camsis export format
+
+
+    # Try to detect 'Alice Smith<alice@smith.com>, Bob Smith<bob@smith.com>' format
     details = re.findall(r'\s*(?P<name>[^,\<\>]+?)\s*\<(?P<email>.+?@.+?)\>\s*', raw_string)
     if details:
         return details
 
+    # Try to detect comma or tab separated formats
+    # 'Alice Smith, alice@smith.com \n Bob Smith, bob@smith.com'
     details = []
+    column_lookup = None
     for line in str.strip(raw_string).split('\n'):
-        parts = list(map(str.strip, line.split(',')))
+        separator = '\t' if line[0:3] == '360' else ','
+        parts = list(map(str.strip, line.split(separator)))
+
+        if 'First Name - Pref/Prim' in parts:
+            column_lookup = (
+                parts.index('Last Name'),
+                parts.index('First Name - Pref/Prim'),
+                parts.index('CRSID')
+            )
+            continue
+
+        if column_lookup:
+            reordered_parts = (parts[i] for i in column_lookup)
+            parts = list(reordered_parts)
+
         if len(parts) == 3:
             name = '{} {}'.format(parts[1], parts[0])
             email = parts[2]
@@ -209,7 +230,7 @@ def get_student_for_hash(hash):
 
 
 def get_hash_for_student(student):
-    salt = 'zov5!5!2onxl'
+    salt = 'zov5!5!2onxl'  # todo - move this into config and change value (at time when it won't matter that all old links failed)
     cleartext = salt + student.email
     return str(student.id) + '-' + hashlib.md5(cleartext.encode('utf-8')).hexdigest()[0:12]
 
