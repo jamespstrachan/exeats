@@ -27,7 +27,9 @@
   }
 
   function recent(x){ return x.getAttribute('data-timestamp-last-slot') > earliest_recent_timestamp}
-  function prospective(x){ return x.getAttribute('data-timestamp-last-slot') > current_timestamp}
+  function prospective(x){ return prospectiveAfter(x, current_timestamp)}
+  function prospectiveBefore(x, timestamp){ return x.getAttribute('data-timestamp-last-slot') < timestamp}
+  function prospectiveAfter(x, timestamp){ return x.getAttribute('data-timestamp-last-slot') > timestamp}
   function attended(x){ return x.getAttribute('data-timestamp-last-slot') == x.getAttribute('data-timestamp-last-attended')}
 
   function changeAll(checked){
@@ -48,6 +50,14 @@
 
   function selectProspective(){
     map_checkboxes(function(x){return x.checked = prospective(x)})
+  }
+
+  function selectToday(){
+    map_checkboxes(function(x){return x.checked = prospective(x) && prospectiveBefore(x, new Date().setHours(24,0,0,0)/1000)})
+  }
+
+  function selectTomorrow(){
+    map_checkboxes(function(x){return x.checked = prospectiveAfter(x, new Date().setHours(24,0,0,0)/1000) && prospectiveBefore(x, new Date().setHours(48,0,0,0)/1000)})
   }
 
   function selectInverse(){
@@ -102,11 +112,14 @@ Regards,
             <small>
                 <a href="javascript:changeAll(true)">All</a>
               | <a href="javascript:changeAll(false)">None</a>
-              | <a href="javascript:selectNoResponse()">Not signed up</a>
+              | <a href="javascript:selectInverse()">Invert</a><br>
+                <a href="javascript:selectNoResponse()">Not signed up</a>
               | <a href="javascript:selectMissed()">Missed appointment</a>
               | <a href="javascript:selectSeen()">Seen in last fortnight</a>
-              | <a href="javascript:selectProspective()">Scheduled to see</a>
-              | <a href="javascript:selectInverse()">Invert</a> </small>
+              | Scheduled: <a href="javascript:selectProspective()">All</a>,
+                <a href="javascript:selectToday()">Later today</a>,
+                <a href="javascript:selectTomorrow()">Tomorrow</a>
+              </small>
           </p>
         </td>
       </tr>
