@@ -381,6 +381,18 @@ def toggle_attended(request, id):
 
 
 @login_required
+def toggle_alert(request, id):
+    try:
+        student = Student.objects.get(id=id, tutor=request.session['tutor_id'])
+    except Student.DoesNotExist:
+        raise Http404("Not found")
+
+    student.alert = not student.alert
+    student.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required
 def history(request):
     context = {
         'slots': Slot.objects.filter(tutor=request.session['tutor_id'],
@@ -401,7 +413,7 @@ def deploy(request):
         return HttpResponseForbidden('Invalid signature header')
 
     if subprocess.run(["git", "pull"], timeout=15).returncode == 0 and \
-       subprocess.run(["python", "manage.py", "migrate"], timeout=15).returncode == 0:
+       subprocess.run(["python", "src/manage.py", "migrate"], timeout=15).returncode == 0:
         return HttpResponse('Webhook received', status=http.client.ACCEPTED)
     raise Http404("Update failed")
 

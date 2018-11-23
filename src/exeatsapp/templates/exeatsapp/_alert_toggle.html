@@ -1,0 +1,6 @@
+{% if slot.allocatedto %}
+<a class="slot_flag_icon {% if slot.allocatedto.alert == True %}confirmed{% endif %}" onclick="toggle_flag(this);return false;" href="{% url 'exeatsapp:toggle_alert' slot.allocatedto.id %}" title="extra info">
+<span class="yes">!</span>
+<span class="no" >-</span>
+</a>
+{% endif %}

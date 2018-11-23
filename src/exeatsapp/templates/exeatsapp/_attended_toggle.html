@@ -1,5 +1,5 @@
 {% if slot.allocatedto %}
-<a class="slot_attended_icon {% if slot.attended == True %}confirmed{% endif %}" onclick="toggle_attended(this);return false;" href="{% url 'exeatsapp:toggle_attended' slot.id %}" title="attended">
+<a class="slot_flag_icon {% if slot.attended == True %}confirmed{% endif %}" onclick="toggle_flag(this);return false;" href="{% url 'exeatsapp:toggle_attended' slot.id %}" title="attended">
 <span class="yes">✔</span>
 <span class="no" >☐</span>
 </a>

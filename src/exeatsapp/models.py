@@ -21,9 +21,10 @@ class Slot(models.Model):
 
 
 class Student(models.Model):
-    name = models.CharField(max_length=100)
+    name  = models.CharField(max_length=100)
     email = models.CharField(max_length=100)
     tutor = models.ForeignKey('Tutor', on_delete=models.PROTECT, db_column='tutor')
+    alert = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'student'

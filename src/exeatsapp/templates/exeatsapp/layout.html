@@ -436,19 +436,19 @@ li a:active {
   padding: 7px 2px;
   z-index:101;
   border-radius:50%;
-  background-color:rgb(193, 147, 36);
+  background-color:rgb(147, 193, 36);
   color:white;
   font-weight: bold;
   box-shadow: 4px 2px 5px rgba(0,0,0,0.2);
   transform: rotate(15deg);
 }
 
-.slot_attended_icon { font-weight: normal; color: #ccc; }
-.slot_attended_icon.confirmed { font-weight: bold; color: green;}
-.slot_attended_icon .yes,
-.slot_attended_icon.confirmed .no { display: none }
-.slot_attended_icon .no,
-.slot_attended_icon.confirmed .yes { display: inline-block }
+.slot_flag_icon { font-weight: normal; color: #ccc; }
+.slot_flag_icon.confirmed { font-weight: bold; color: green;}
+.slot_flag_icon .yes,
+.slot_flag_icon.confirmed .no { display: none }
+.slot_flag_icon .no,
+.slot_flag_icon.confirmed .yes { display: inline-block }
 
 .show_free_slots + table .free_slot {display:none}
 .show_free_slots:checked + table .free_slot {display:table-row}
@@ -612,7 +612,7 @@ li a:active {
     })
   });
 
-  function toggle_attended(element, slot_id) {
+  function toggle_flag(element, slot_id) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
       if (xmlhttp.readyState == XMLHttpRequest.DONE && xmlhttp.status == 200) {
