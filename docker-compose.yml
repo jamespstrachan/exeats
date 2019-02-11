@@ -1,0 +1,13 @@
+version: '3'
+services:
+  exeats:
+    build:
+      context: .
+    expose:
+      - 80
+      - 81
+    ports:
+      - 70:80
+      - 71:81
+    volumes:
+      - .:/app

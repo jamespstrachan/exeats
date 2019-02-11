@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
   <head>
@@ -551,7 +552,7 @@ li a:active {
           &nbsp;
         </div>
         <div id="layout-header" style="position: relative; overflow:visible">
-          <img src="http://www.exeats.com/static/TM9QR5WA/images/logo.png" alt="exeats.com" />
+          <img src="{% static 'logo.png' %}" alt="exeats.com" />
             {% if request.session.tutor_email %}
             <div class="beta-badge">beta</div>
             <div id="login">
