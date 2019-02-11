@@ -413,8 +413,8 @@ def deploy(request):
         return HttpResponseForbidden('Invalid signature header')
 
     if subprocess.run(["git", "pull"], timeout=15).returncode == 0 and \
-       subprocess.run(["python", "src/manage.py", "migrate"], timeout=15).returncode == 0 and \
-       subprocess.run(["python", "src/manage.py", "collectstatic", "--noinput"], timeout=15).returncode == 0:
+       subprocess.run(["python", "manage.py", "migrate"], timeout=15).returncode == 0 and \
+       subprocess.run(["python", "manage.py", "collectstatic", "--noinput"], timeout=15).returncode == 0:
         return HttpResponse('Webhook received', status=http.client.ACCEPTED)
     raise Http404("Update failed")
 
