@@ -134,7 +134,7 @@ SHORT_DATETIME_FORMAT = "H:i D j M Y"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-STATIC_ROOT = credentials.get('STATIC_ROOT', os.path.join(BASE_DIR, 'static/'))
+STATIC_ROOT = getattr(credentials, 'STATIC_ROOT', os.path.join(BASE_DIR, 'static/'))
 STATIC_URL = '/static/'
 
 # todo - consider re-implementing Tutor as base auth model
