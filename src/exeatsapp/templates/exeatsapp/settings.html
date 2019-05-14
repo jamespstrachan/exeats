@@ -1,0 +1,14 @@
+{% extends "exeatsapp/layout.html" %}
+
+{% block content %}
+<h1>
+  Settings
+</h1>
+<form action="" method="POST">
+{%csrf_token%}
+Change tutor name:
+<input name="tutor_name" value="{{tutor.name}}">
+<input type="submit">
+</form>
+
+{% endblock %}

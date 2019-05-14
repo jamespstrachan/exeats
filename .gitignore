@@ -5,3 +5,4 @@
 __pycache__
 *.pyc
 /src/credentials.py
+.env

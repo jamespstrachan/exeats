@@ -403,6 +403,22 @@ def history(request):
     return render(request, 'exeatsapp/history.html', context)
 
 
+@login_required
+def settings(request):
+    tutor = Tutor.objects.get(id=request.session['tutor_id'])
+    if request.method == 'POST':
+        tutor.name = request.POST['tutor_name']
+        tutor.save()
+        message_text = 'Tutor name changed'
+        messages.add_message(request, messages.INFO, message_text)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+    context = {
+        'tutor': tutor
+    }
+    return render(request, 'exeatsapp/settings.html', context)
+
+
 @csrf_exempt
 def deploy(request):
     """ triggers git pull of updated application code on receipt of valid webhook """
