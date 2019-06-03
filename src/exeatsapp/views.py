@@ -404,7 +404,7 @@ def history(request):
 
 
 @login_required
-def settings(request):
+def tutor_settings(request):
     tutor = Tutor.objects.get(id=request.session['tutor_id'])
     if request.method == 'POST':
         tutor.name = request.POST['tutor_name']
